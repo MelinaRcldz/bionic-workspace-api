@@ -3,8 +3,8 @@
 ## 🟦 FASE 0 — Arquitectura & Setup Inicial
 - [x] Repositorio GitHub.
 - [x] Setup de NestJS + TypeScript con pnpm.
-- [ ] Entorno local con Docker Compose + PostgreSQL.
-- [ ] Configuración de Drizzle ORM, cliente y variables de entorno (.env).
+- [x] Entorno local con Docker Compose + PostgreSQL.
+- [x] Configuración de Drizzle ORM, cliente y variables de entorno (.env).
 
 ## 🔐 FASE 1A — Autenticación & Seguridad
 - [ ] Registro de usuarios con hashing de contraseñas (bcrypt).
