@@ -7,7 +7,7 @@
 - [x] Configuración de Drizzle ORM, cliente y variables de entorno (.env).
 
 ## 🔐 FASE 1A — Autenticación & Seguridad
-- [ ] Registro de usuarios con hashing de contraseñas (bcrypt).
+- [x] Registro de usuarios con hashing de contraseñas (bcrypt).
 - [ ] Estrategia JWT (Access & Refresh Tokens).
 - [ ] AuthGuard para aislamiento de datos por usuario.
 - [ ] Helmet, CORS, Throttler y ValidationPipe Global.
