@@ -9,7 +9,7 @@
 ## 🔐 FASE 1A — Autenticación & Seguridad
 - [x] Registro de usuarios con hashing de contraseñas (bcrypt).
 - [x] Estrategia JWT (Access & Refresh Tokens).
-- [ ] AuthGuard para aislamiento de datos por usuario.
+- [x] AuthGuard para aislamiento de datos por usuario.
 - [ ] Helmet, CORS, Throttler y ValidationPipe Global.
 
 ## 🤖 FASE 1B — Dispositivos & Componentes
