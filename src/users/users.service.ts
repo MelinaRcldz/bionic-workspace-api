@@ -21,8 +21,25 @@ export class UsersService {
     return result[0] || null;
   }
 
+  async findById(id: string) {
+    const result = await this.db
+      .select()
+      .from(users)
+      .where(eq(users.id, id))
+      .limit(1);
+
+    return result[0] || null;
+  }
+
   async createUser(data: typeof users.$inferInsert) {
     const result = await this.db.insert(users).values(data).returning();
     return result[0];
+  }
+
+  async updateRefreshToken(userId: string, refreshToken: string | null) {
+    await this.db
+      .update(users)
+      .set({ refreshToken, updatedAt: new Date() })
+      .where(eq(users.id, userId));
   }
 }
