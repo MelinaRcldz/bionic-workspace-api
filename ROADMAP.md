@@ -10,7 +10,7 @@
 - [x] Registro de usuarios con hashing de contraseñas (bcrypt).
 - [x] Estrategia JWT (Access & Refresh Tokens).
 - [x] AuthGuard para aislamiento de datos por usuario.
-- [ ] Helmet, CORS, Throttler y ValidationPipe Global.
+- [x] Helmet, CORS, Throttler y ValidationPipe Global.
 
 ## 🤖 FASE 1B — Dispositivos & Componentes
 - [ ] CRUD completo de Devices (`/devices`).
