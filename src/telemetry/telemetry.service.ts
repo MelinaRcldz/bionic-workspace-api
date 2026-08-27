@@ -1,26 +1,60 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { DRIZZLE } from '../database/database.module';
+import { devices, components } from '../database/schema';
+import * as schema from '../database/schema';
 import { CreateTelemetryDto } from './dto/create-telemetry.dto';
-import { UpdateTelemetryDto } from './dto/update-telemetry.dto';
+import { eq, and } from 'drizzle-orm';
 
 @Injectable()
 export class TelemetryService {
-  create(createTelemetryDto: CreateTelemetryDto) {
-    return 'This action adds a new telemetry';
+  constructor(
+    @Inject(DRIZZLE)
+    private readonly db: PostgresJsDatabase<typeof schema>,
+  ) {}
+
+  private async verifyDeviceAndComponent(
+    deviceId: string,
+    componentId: string,
+    userId: string,
+  ) {
+    const [device] = await this.db
+      .select()
+      .from(devices)
+      .where(and(eq(devices.id, deviceId), eq(devices.userId, userId)));
+
+    if (!device) {
+      throw new NotFoundException('Dispositivo no encontrado o no pertenece al usuario');
+    }
+
+    const [component] = await this.db
+      .select()
+      .from(components)
+      .where(and(eq(components.id, componentId), eq(components.deviceId, deviceId)));
+
+    if (!component) {
+      throw new NotFoundException('El componente no pertenece al dispositivo indicado');
+    }
+
+    return { device, component };
   }
 
-  findAll() {
-    return `This action returns all telemetry`;
-  }
+  async processTelemetry(
+    deviceId: string,
+    userId: string,
+    createTelemetryDto: CreateTelemetryDto,
+  ) {
+    const { component } = await this.verifyDeviceAndComponent(
+      deviceId,
+      createTelemetryDto.componentId,
+      userId,
+    );
 
-  findOne(id: number) {
-    return `This action returns a #${id} telemetry`;
-  }
-
-  update(id: number, updateTelemetryDto: UpdateTelemetryDto) {
-    return `This action updates a #${id} telemetry`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} telemetry`;
+    return {
+      message: 'Endpoint de telemetría listo para procesar e ingresar métricas',
+      deviceId,
+      componentId: component.id,
+      receivedValue: createTelemetryDto.value,
+    };
   }
 }
