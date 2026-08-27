@@ -39,6 +39,32 @@ export class TelemetryService {
     return { device, component };
   }
 
+  // Evalúa el valor contra los umbrales configurados en el componente
+  private evaluateThresholds(valueStr: string, component: typeof components.$inferSelect) {
+    const val = parseFloat(valueStr);
+    const min = component.minThreshold !== null ? parseFloat(component.minThreshold) : null;
+    const max = component.maxThreshold !== null ? parseFloat(component.maxThreshold) : null;
+
+    let isOutofBounds = false;
+    let breachType: 'UNDER_MIN' | 'OVER_MAX' | null = null;
+
+    if (min !== null && val < min) {
+      isOutofBounds = true;
+      breachType = 'UNDER_MIN';
+    } else if (max !== null && val > max) {
+      isOutofBounds = true;
+      breachType = 'OVER_MAX';
+    }
+
+    return {
+      isOutofBounds,
+      breachType,
+      val,
+      min,
+      max,
+    };
+  }
+
   async processTelemetry(
     deviceId: string,
     userId: string,
@@ -50,7 +76,7 @@ export class TelemetryService {
       userId,
     );
 
-    // Persistencia histórica en la tabla telemetry_logs
+    // 1. Guardar log histórico
     const [log] = await this.db
       .insert(telemetryLogs)
       .values({
@@ -60,9 +86,16 @@ export class TelemetryService {
       })
       .returning();
 
+    // 2. Evaluar valor contra umbrales operativos
+    const evaluation = this.evaluateThresholds(createTelemetryDto.value, component);
+
     return {
-      message: 'Telemetría registrada exitosamente',
+      message: 'Telemetría procesada y evaluada correctamente',
       log,
+      evaluation: {
+        isOutofBounds: evaluation.isOutofBounds,
+        breachType: evaluation.breachType,
+      },
     };
   }
 }
