@@ -1,7 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { DRIZZLE } from '../database/database.module';
-import { devices, components } from '../database/schema';
+import { devices, components, telemetryLogs } from '../database/schema';
 import * as schema from '../database/schema';
 import { CreateTelemetryDto } from './dto/create-telemetry.dto';
 import { eq, and } from 'drizzle-orm';
@@ -50,11 +50,19 @@ export class TelemetryService {
       userId,
     );
 
+    // Persistencia histórica en la tabla telemetry_logs
+    const [log] = await this.db
+      .insert(telemetryLogs)
+      .values({
+        value: createTelemetryDto.value,
+        deviceId,
+        componentId: component.id,
+      })
+      .returning();
+
     return {
-      message: 'Endpoint de telemetría listo para procesar e ingresar métricas',
-      deviceId,
-      componentId: component.id,
-      receivedValue: createTelemetryDto.value,
+      message: 'Telemetría registrada exitosamente',
+      log,
     };
   }
 }

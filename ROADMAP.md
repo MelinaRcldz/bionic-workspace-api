@@ -19,7 +19,7 @@
 
 ## 📡 FASE 1C — Telemetría, Monitoreo & Alertas
 - [x] Endpoint de telemetría (`POST /devices/:id/telemetry`).
-- [ ] Persistencia histórica en tabla `telemetry_logs`.
+- [x] Persistencia histórica en tabla `telemetry_logs`.
 - [ ] Evaluaciones en Service contra umbrales operativos.
 - [ ] Generación automática de alertas y actualización de estado.
 
