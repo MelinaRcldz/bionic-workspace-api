@@ -13,9 +13,9 @@
 - [x] Helmet, CORS, Throttler y ValidationPipe Global.
 
 ## 🤖 FASE 1B — Dispositivos & Componentes
-- [ ] CRUD completo de Devices (`/devices`).
-- [ ] CRUD completo de Components (`/devices/:id/components`).
-- [ ] Configuración de umbrales en componentes/dispositivos.
+- [x] CRUD completo de Devices (`/devices`).
+- [x] CRUD completo de Components (`/devices/:id/components`).
+- [x] Configuración de umbrales en componentes/dispositivos.
 
 ## 📡 FASE 1C — Telemetría, Monitoreo & Alertas
 - [ ] Endpoint de telemetría (`POST /devices/:id/telemetry`).
