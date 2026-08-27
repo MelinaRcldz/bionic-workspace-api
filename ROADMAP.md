@@ -14,7 +14,7 @@
 
 ## 🤖 FASE 1B — Dispositivos & Componentes
 - [x] CRUD completo de Devices (`/devices`).
-- [ ] CRUD completo de Components (`/devices/:id/components`).
+- [x] CRUD completo de Components (`/devices/:id/components`).
 - [ ] Configuración de umbrales en componentes/dispositivos.
 
 ## 📡 FASE 1C — Telemetría, Monitoreo & Alertas

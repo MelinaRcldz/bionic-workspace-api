@@ -6,6 +6,7 @@ import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { DevicesModule } from './devices/devices.module';
+import { ComponentsModule } from './components/components.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { DevicesModule } from './devices/devices.module';
     UsersModule,
     AuthModule,
     DevicesModule,
+    ComponentsModule,
   ],
   providers: [
     {
