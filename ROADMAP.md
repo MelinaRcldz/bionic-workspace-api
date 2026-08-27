@@ -21,7 +21,7 @@
 - [x] Endpoint de telemetría (`POST /devices/:id/telemetry`).
 - [x] Persistencia histórica en tabla `telemetry_logs`.
 - [x] Evaluaciones en Service contra umbrales operativos.
-- [ ] Generación automática de alertas y actualización de estado.
+- [x] Generación automática de alertas y actualización de estado.
 
 ## 📁 FASE 1D — Archivos MVP (Holograma & Docs)
 - [ ] Subida de imagen vista 3/4 (`REPRESENTATION`).
