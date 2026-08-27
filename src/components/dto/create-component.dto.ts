@@ -1,10 +1,16 @@
 import {
+  IsEnum,
   IsNotEmpty,
   IsNumberString,
   IsOptional,
   IsString,
   MaxLength,
 } from 'class-validator';
+
+export enum AlertSeverityEnum {
+  WARNING = 'WARNING',
+  CRITICAL = 'CRITICAL',
+}
 
 export class CreateComponentDto {
   @IsString()
@@ -24,6 +30,14 @@ export class CreateComponentDto {
   @IsOptional()
   @IsNumberString()
   maxThreshold?: string;
+
+  @IsOptional()
+  @IsEnum(AlertSeverityEnum)
+  minSeverity?: AlertSeverityEnum;
+
+  @IsOptional()
+  @IsEnum(AlertSeverityEnum)
+  maxSeverity?: AlertSeverityEnum;
 
   @IsOptional()
   @IsString()

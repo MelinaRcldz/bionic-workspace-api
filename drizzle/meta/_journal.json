@@ -22,6 +22,20 @@
       "when": 1787748088247,
       "tag": "0002_colossal_masque",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1787823371513,
+      "tag": "0003_known_squadron_supreme",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1787832324762,
+      "tag": "0004_common_wong",
+      "breakpoints": true
     }
   ]
 }

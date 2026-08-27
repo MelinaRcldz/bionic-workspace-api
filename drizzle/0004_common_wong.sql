@@ -1,0 +1,2 @@
+ALTER TABLE "components" ADD COLUMN "min_severity" varchar(50) DEFAULT 'WARNING' NOT NULL;--> statement-breakpoint
+ALTER TABLE "components" ADD COLUMN "max_severity" varchar(50) DEFAULT 'CRITICAL' NOT NULL;
