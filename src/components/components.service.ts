@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException, } from '@nestjs/common';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { DRIZZLE } from '../database/database.module';
 import { components, devices } from '../database/schema';
@@ -27,8 +27,29 @@ export class ComponentsService {
     return device;
   }
 
+  // Validación de lógica de negocio para umbrales operativos
+  private validateThresholds(min?: string, max?: string) {
+    if (min !== undefined && max !== undefined) {
+      const minNum = parseFloat(min);
+      const maxNum = parseFloat(max);
+
+      if (isNaN(minNum) || isNaN(maxNum)) {
+        throw new BadRequestException('Los umbrales deben ser valores numéricos válidos');
+      }
+
+      if (minNum >= maxNum) {
+        throw new BadRequestException(
+          `El umbral mínimo (${minNum}) debe ser menor que el umbral máximo (${maxNum})`,
+        );
+      }
+    }
+  }
+
   async create(deviceId: string, userId: string, createComponentDto: CreateComponentDto) {
     await this.verifyDeviceOwnership(deviceId, userId);
+
+    // Validar rango numérico de umbrales
+    this.validateThresholds(createComponentDto.minThreshold, createComponentDto.maxThreshold);
 
     const [newComponent] = await this.db
       .insert(components)
@@ -71,7 +92,13 @@ export class ComponentsService {
     userId: string,
     updateComponentDto: UpdateComponentDto,
   ) {
-    await this.findOne(id, deviceId, userId);
+    const currentComponent = await this.findOne(id, deviceId, userId);
+
+    // Evaluar los nuevos umbrales combinados con los existentes
+    const effectiveMin = updateComponentDto.minThreshold ?? currentComponent.minThreshold ?? undefined;
+    const effectiveMax = updateComponentDto.maxThreshold ?? currentComponent.maxThreshold ?? undefined;
+
+    this.validateThresholds(effectiveMin, effectiveMax);
 
     const [updatedComponent] = await this.db
       .update(components)
