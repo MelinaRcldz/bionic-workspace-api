@@ -36,6 +36,13 @@
       "when": 1787832324762,
       "tag": "0004_common_wong",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1787912730233,
+      "tag": "0005_noisy_echo",
+      "breakpoints": true
     }
   ]
 }

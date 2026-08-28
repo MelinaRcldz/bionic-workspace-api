@@ -9,6 +9,7 @@ export const components = pgTable('components', {
   maxThreshold: numeric('max_threshold', { precision: 10, scale: 2 }), // ej: 85.50 (Temp max en °C)
   minSeverity: varchar('min_severity', { length: 50 }).default('WARNING').notNull(),
   maxSeverity: varchar('max_severity', { length: 50 }).default('CRITICAL').notNull(),
+  status: varchar('status', { length: 50 }).default('OPERATIONAL').notNull(),
   unit: varchar('unit', { length: 50 }), // ej: "°C", "RPM", "A"
   deviceId: uuid('device_id')
     .notNull()

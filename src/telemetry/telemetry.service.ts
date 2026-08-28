@@ -13,7 +13,7 @@ export class TelemetryService {
   constructor(
     @Inject(DRIZZLE)
     private readonly db: PostgresJsDatabase<typeof schema>,
-  ) {}
+  ) { }
 
   private async verifyDeviceAndComponent(
     deviceId: string,
@@ -114,6 +114,7 @@ export class TelemetryService {
     );
 
     let generatedAlert: typeof alerts.$inferSelect | null = null;
+    let newStatus = 'OPERATIONAL';
 
     // 3. Generar alerta si el valor está fuera de rango
     if (evaluation.isOutOfBounds) {
@@ -121,6 +122,8 @@ export class TelemetryService {
         evaluation.breachType === 'OVER_MAX'
           ? (component.maxSeverity as AlertSeverity) || 'CRITICAL'
           : (component.minSeverity as AlertSeverity) || 'WARNING';
+
+      newStatus = severity;
 
       const message =
         evaluation.breachType === 'OVER_MAX'
@@ -142,11 +145,20 @@ export class TelemetryService {
       generatedAlert = alertCreated;
     }
 
+    await this.db
+      .update(components)
+      .set({
+        status: newStatus,
+        updatedAt: new Date(),
+      })
+      .where(eq(components.id, component.id));
+
     return {
       message: evaluation.isOutOfBounds
         ? 'Telemetría procesada: ¡Alerta generada!'
         : 'Telemetría procesada exitosamente',
       log,
+      componentStatus: newStatus,
       evaluation: {
         isOutOfBounds: evaluation.isOutOfBounds,
         breachType: evaluation.breachType,
@@ -156,21 +168,21 @@ export class TelemetryService {
   }
 
   async findAllByDevice(deviceId: string, userId: string) {
-  const [device] = await this.db
-    .select()
-    .from(devices)
-    .where(and(eq(devices.id, deviceId), eq(devices.userId, userId)));
+    const [device] = await this.db
+      .select()
+      .from(devices)
+      .where(and(eq(devices.id, deviceId), eq(devices.userId, userId)));
 
-  if (!device) {
-    throw new NotFoundException(
-      'Dispositivo no encontrado o no pertenece al usuario',
-    );
+    if (!device) {
+      throw new NotFoundException(
+        'Dispositivo no encontrado o no pertenece al usuario',
+      );
+    }
+
+    return this.db
+      .select()
+      .from(telemetryLogs)
+      .where(eq(telemetryLogs.deviceId, deviceId))
+      .orderBy(desc(telemetryLogs.createdAt));
   }
-
-  return this.db
-    .select()
-    .from(telemetryLogs)
-    .where(eq(telemetryLogs.deviceId, deviceId))
-    .orderBy(desc(telemetryLogs.createdAt));
-}
 }
