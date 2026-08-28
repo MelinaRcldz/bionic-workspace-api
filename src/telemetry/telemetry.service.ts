@@ -1,15 +1,10 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { DRIZZLE } from '../database/database.module';
-import {
-  devices,
-  components,
-  telemetryLogs,
-  alerts,
-} from '../database/schema';
+import { devices, components, telemetryLogs, alerts, } from '../database/schema';
 import * as schema from '../database/schema';
 import { CreateTelemetryDto } from './dto/create-telemetry.dto';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, desc } from 'drizzle-orm';
 
 export type AlertSeverity = 'WARNING' | 'CRITICAL';
 
@@ -159,4 +154,23 @@ export class TelemetryService {
       alert: generatedAlert,
     };
   }
+
+  async findAllByDevice(deviceId: string, userId: string) {
+  const [device] = await this.db
+    .select()
+    .from(devices)
+    .where(and(eq(devices.id, deviceId), eq(devices.userId, userId)));
+
+  if (!device) {
+    throw new NotFoundException(
+      'Dispositivo no encontrado o no pertenece al usuario',
+    );
+  }
+
+  return this.db
+    .select()
+    .from(telemetryLogs)
+    .where(eq(telemetryLogs.deviceId, deviceId))
+    .orderBy(desc(telemetryLogs.createdAt));
+}
 }
