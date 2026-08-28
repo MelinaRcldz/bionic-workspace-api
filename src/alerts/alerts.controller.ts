@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Req, UseGuards, Patch } from '@nestjs/common';
 import { AlertsService } from './alerts.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -24,5 +24,13 @@ export class AlertsController {
     @Req() req: any,
   ) {
     return this.alertsService.findOne(alertId, req.user.id);
+  }
+
+  @Patch('alerts/:id/resolve')
+  resolve(
+    @Param('id') alertId: string,
+    @Req() req: any,
+  ) {
+    return this.alertsService.resolveAlert(alertId, req.user.id);
   }
 }

@@ -27,7 +27,7 @@
 - [x] 1. Histórico de telemetría por dispositivo (`GET /devices/:id/telemetry`).
 - [x] 2. Consulta de alertas de un dispositivo (`GET /devices/:id/alerts`).
 - [x] 3. Consulta de una alerta específica (`GET /alerts/:id`).
-- [ ] 4. Resolución de alertas (`PATCH /alerts/:id/resolve`).
+- [x] 4. Resolución de alertas (`PATCH /alerts/:id/resolve`).
 - [ ] 5. Estado operativo automático de componentes (`status` en `components`).
 
 ## 📁 FASE 1E — Archivos MVP (Holograma & Docs)

@@ -49,4 +49,36 @@ export class AlertsService {
 
     return result.alert;
   }
+
+  async resolveAlert(alertId: string, userId: string) {
+    // 1. Validar que la alerta existe y pertenece a un dispositivo del usuario
+    const [result] = await this.db
+      .select({
+        alert: alerts,
+      })
+      .from(alerts)
+      .innerJoin(devices, eq(alerts.deviceId, devices.id))
+      .where(and(eq(alerts.id, alertId), eq(devices.userId, userId)));
+
+    if (!result) {
+      throw new NotFoundException(
+        'Alerta no encontrada o no pertenece al usuario',
+      );
+    }
+
+    // 2. Actualizar estado de resolución de la alerta
+    const [updatedAlert] = await this.db
+      .update(alerts)
+      .set({
+        isResolved: true,
+        resolvedAt: new Date(),
+      })
+      .where(eq(alerts.id, alertId))
+      .returning();
+
+    return {
+      message: 'Alerta marcada como resuelta exitosamente',
+      alert: updatedAlert,
+    };
+  }
 }
