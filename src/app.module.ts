@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { DevicesModule } from './devices/devices.module';
 import { ComponentsModule } from './components/components.module';
 import { TelemetryModule } from './telemetry/telemetry.module';
+import { AlertsModule } from './alerts/alerts.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { TelemetryModule } from './telemetry/telemetry.module';
     DevicesModule,
     ComponentsModule,
     TelemetryModule,
+    AlertsModule,
   ],
   providers: [
     {
