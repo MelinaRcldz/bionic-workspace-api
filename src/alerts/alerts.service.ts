@@ -30,4 +30,23 @@ export class AlertsService {
       .where(eq(alerts.deviceId, deviceId))
       .orderBy(desc(alerts.createdAt));
   }
+
+  async findOne(alertId: string, userId: string) {
+    // Buscar la alerta unida a su dispositivo para validar pertenencia al usuario
+    const [result] = await this.db
+      .select({
+        alert: alerts,
+      })
+      .from(alerts)
+      .innerJoin(devices, eq(alerts.deviceId, devices.id))
+      .where(and(eq(alerts.id, alertId), eq(devices.userId, userId)));
+
+    if (!result) {
+      throw new NotFoundException(
+        'Alerta no encontrada o no pertenece al usuario',
+      );
+    }
+
+    return result.alert;
+  }
 }

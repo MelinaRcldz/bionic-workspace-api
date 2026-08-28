@@ -17,4 +17,12 @@ export class AlertsController {
       req.user.id,
     );
   }
+  
+  @Get('alerts/:id')
+  findOne(
+    @Param('id') alertId: string,
+    @Req() req: any,
+  ) {
+    return this.alertsService.findOne(alertId, req.user.id);
+  }
 }
