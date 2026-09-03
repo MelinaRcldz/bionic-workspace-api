@@ -28,7 +28,7 @@
 - [x] 2. Consulta de alertas de un dispositivo (`GET /devices/:id/alerts`).
 - [x] 3. Consulta de una alerta específica (`GET /alerts/:id`).
 - [x] 4. Resolución de alertas (`PATCH /alerts/:id/resolve`).
-- [x] 5. Estado operativo automático de componentes (`status` en `components`).
+- [x] 5. Estado operativo de componentes según telemetría y alertas.
 
 ## 📁 FASE 1E — Archivos MVP (Holograma & Docs)
 - [ ] Subida de imagen vista 3/4 (`REPRESENTATION`).

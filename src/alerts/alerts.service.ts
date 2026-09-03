@@ -2,7 +2,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { eq, and, desc } from 'drizzle-orm';
 import { DRIZZLE } from '../database/database.module';
-import { devices, alerts } from '../database/schema';
+import { devices, alerts, components, telemetryLogs } from '../database/schema';
 import * as schema from '../database/schema';
 
 @Injectable()
@@ -51,7 +51,7 @@ export class AlertsService {
   }
 
   async resolveAlert(alertId: string, userId: string) {
-    // 1. Validar que la alerta existe y pertenece a un dispositivo del usuario
+    // 1. Verificar que la alerta exista y pertenezca al usuario
     const [result] = await this.db
       .select({
         alert: alerts,
@@ -66,7 +66,7 @@ export class AlertsService {
       );
     }
 
-    // 2. Actualizar estado de resolución de la alerta
+    // 2. Marcar la alerta como resuelta
     const [updatedAlert] = await this.db
       .update(alerts)
       .set({
@@ -75,6 +75,58 @@ export class AlertsService {
       })
       .where(eq(alerts.id, alertId))
       .returning();
+
+    // 3. Buscar el componente afectado
+    const [component] = await this.db
+      .select()
+      .from(components)
+      .where(eq(components.id, updatedAlert.componentId));
+
+    if (component) {
+      // 4. Buscar la última telemetría del componente
+      const [lastLog] = await this.db
+        .select()
+        .from(telemetryLogs)
+        .where(eq(telemetryLogs.componentId, component.id))
+        .orderBy(desc(telemetryLogs.createdAt))
+        .limit(1);
+
+      let newStatus = 'OPERATIONAL';
+      let newStatusReason: string | null = null;
+
+      // 5. Comprobar si el problema físico sigue presente
+      if (lastLog) {
+        const val = parseFloat(lastLog.value);
+
+        const min =
+          component.minThreshold !== null
+            ? parseFloat(component.minThreshold)
+            : null;
+
+        const max =
+          component.maxThreshold !== null
+            ? parseFloat(component.maxThreshold)
+            : null;
+
+        const isStillOutOfBounds =
+          (min !== null && val < min) || (max !== null && val > max);
+
+        if (isStillOutOfBounds) {
+          newStatus = 'WARNING';
+          newStatusReason = 'PERSISTENT_AFTER_RESOLUTION';
+        }
+      }
+
+      // 6. Actualizar el estado actual del componente
+      await this.db
+        .update(components)
+        .set({
+          status: newStatus,
+          statusReason: newStatusReason,
+          updatedAt: new Date(),
+        })
+        .where(eq(components.id, component.id));
+    }
 
     return {
       message: 'Alerta marcada como resuelta exitosamente',

@@ -156,8 +156,15 @@ export class TelemetryService {
         // Segunda lectura normal consecutiva -> Recuperación completa
         newStatus = 'OPERATIONAL';
         newStatusReason = null;
+      } else if (
+        component.status === 'WARNING' &&
+        component.statusReason === 'PERSISTENT_AFTER_RESOLUTION'
+      ) {
+        // Una lectura normal confirma que la resolución del usuario surtió efecto
+        newStatus = 'OPERATIONAL';
+        newStatusReason = null;
       } else {
-        // Lectura normal sin recuperación pendiente -> OPERATIONAL
+        // Ya estaba en OPERATIONAL
         newStatus = 'OPERATIONAL';
         newStatusReason = null;
       }
