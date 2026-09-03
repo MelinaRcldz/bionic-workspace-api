@@ -1,4 +1,10 @@
-import { pgTable, uuid, varchar, numeric, timestamp } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  uuid,
+  varchar,
+  numeric,
+  timestamp,
+} from 'drizzle-orm/pg-core';
 import { devices } from './devices';
 
 export const components = pgTable('components', {
@@ -7,8 +13,14 @@ export const components = pgTable('components', {
   type: varchar('type', { length: 100 }).notNull(), // ej: "ACTUATOR", "SENSOR"
   minThreshold: numeric('min_threshold', { precision: 10, scale: 2 }), // ej: 0.00
   maxThreshold: numeric('max_threshold', { precision: 10, scale: 2 }), // ej: 85.50 (Temp max en °C)
-  minSeverity: varchar('min_severity', { length: 50 }).default('WARNING').notNull(),
-  maxSeverity: varchar('max_severity', { length: 50 }).default('CRITICAL').notNull(),
+  minSeverity: varchar('min_severity', { length: 50 })
+    .default('WARNING')
+    .notNull(),
+  maxSeverity: varchar('max_severity', { length: 50 })
+    .default('CRITICAL')
+    .notNull(),
+  status: varchar('status', { length: 50 }).default('OPERATIONAL').notNull(),
+  statusReason: varchar('status_reason', { length: 100 }),
   unit: varchar('unit', { length: 50 }), // ej: "°C", "RPM", "A"
   deviceId: uuid('device_id')
     .notNull()

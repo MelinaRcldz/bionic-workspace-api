@@ -21,17 +21,24 @@
 - [x] Endpoint de telemetría (`POST /devices/:id/telemetry`).
 - [x] Persistencia histórica en tabla `telemetry_logs`.
 - [x] Evaluaciones en Service contra umbrales operativos.
-- [x] Generación automática de alertas y actualización de estado.
+- [x] Generación automática de alertas.
 
-## 📁 FASE 1D — Archivos MVP (Holograma & Docs)
+## 🚨 FASE 1D — Consulta, Gestión & Estado de Telemetría
+- [x] 1. Histórico de telemetría por dispositivo (`GET /devices/:id/telemetry`).
+- [x] 2. Consulta de alertas de un dispositivo (`GET /devices/:id/alerts`).
+- [x] 3. Consulta de una alerta específica (`GET /alerts/:id`).
+- [x] 4. Resolución de alertas (`PATCH /alerts/:id/resolve`).
+- [x] 5. Estado operativo de componentes según telemetría y alertas.
+
+## 📁 FASE 1E — Archivos MVP (Holograma & Docs)
 - [ ] Subida de imagen vista 3/4 (`REPRESENTATION`).
 - [ ] Subida y descarga de archivos técnicos (`DOCUMENTATION`).
 
-## 🔮 FASE 1E — Integración Frontend
+## 🔮 FASE 1F — Integración Frontend
 - [ ] Migración de localStorage a peticiones HTTP.
 - [ ] Vistas: Login, Registro, Dashboard "Mis Robots" y Detalle Holográfico.
 
-## 📚 FASE 1F — Documentación & Deploy
+## 📚 FASE 1G — Documentación & Deploy
 - [ ] Swagger UI en `/api/docs`.
 - [ ] README.md completo con arquitectura e instrucciones.
 - [ ] Deploy Cloud de API + PostgreSQL en producción.

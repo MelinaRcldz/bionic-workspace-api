@@ -1,0 +1,1 @@
+ALTER TABLE "components" ADD COLUMN "status" varchar(50) DEFAULT 'OPERATIONAL' NOT NULL;

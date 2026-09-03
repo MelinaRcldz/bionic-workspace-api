@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, UseGuards, Req } from '@nestjs/common';
 import { TelemetryService } from './telemetry.service';
 import { CreateTelemetryDto } from './dto/create-telemetry.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -18,6 +18,17 @@ export class TelemetryController {
       deviceId,
       req.user.id,
       createTelemetryDto,
+    );
+  }
+
+  @Get()
+  findAll(
+    @Param('deviceId') deviceId: string,
+    @Req() req: any,
+  ) {
+    return this.telemetryService.findAllByDevice(
+      deviceId,
+      req.user.id,
     );
   }
 }

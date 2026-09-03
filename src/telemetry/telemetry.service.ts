@@ -1,15 +1,10 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { DRIZZLE } from '../database/database.module';
-import {
-  devices,
-  components,
-  telemetryLogs,
-  alerts,
-} from '../database/schema';
+import { devices, components, telemetryLogs, alerts } from '../database/schema';
 import * as schema from '../database/schema';
 import { CreateTelemetryDto } from './dto/create-telemetry.dto';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, desc } from 'drizzle-orm';
 
 export type AlertSeverity = 'WARNING' | 'CRITICAL';
 
@@ -40,10 +35,7 @@ export class TelemetryService {
       .select()
       .from(components)
       .where(
-        and(
-          eq(components.id, componentId),
-          eq(components.deviceId, deviceId),
-        ),
+        and(eq(components.id, componentId), eq(components.deviceId, deviceId)),
       );
 
     if (!component) {
@@ -119,13 +111,19 @@ export class TelemetryService {
     );
 
     let generatedAlert: typeof alerts.$inferSelect | null = null;
+    let newStatus = 'OPERATIONAL';
+    let newStatusReason: string | null = null;
 
-    // 3. Generar alerta si el valor está fuera de rango
+    // 3. Determinar estado del componente y generar alerta si corresponde
     if (evaluation.isOutOfBounds) {
+      // 🔴 FUERA DE RANGO -> Asignar severidad y resetear statusReason
       const severity: AlertSeverity =
         evaluation.breachType === 'OVER_MAX'
           ? (component.maxSeverity as AlertSeverity) || 'CRITICAL'
           : (component.minSeverity as AlertSeverity) || 'WARNING';
+
+      newStatus = severity;
+      newStatusReason = null;
 
       const message =
         evaluation.breachType === 'OVER_MAX'
@@ -145,18 +143,74 @@ export class TelemetryService {
         .returning();
 
       generatedAlert = alertCreated;
+    } else {
+      // 🟢 DENTRO DE RANGO -> Evaluar según estado previo del componente
+      if (component.status === 'CRITICAL') {
+        // Primera lectura normal tras un CRITICAL
+        newStatus = 'WARNING';
+        newStatusReason = 'RECOVERY';
+      } else if (
+        component.status === 'WARNING' &&
+        component.statusReason === 'RECOVERY'
+      ) {
+        // Segunda lectura normal consecutiva -> Recuperación completa
+        newStatus = 'OPERATIONAL';
+        newStatusReason = null;
+      } else if (
+        component.status === 'WARNING' &&
+        component.statusReason === 'PERSISTENT_AFTER_RESOLUTION'
+      ) {
+        // Una lectura normal confirma que la resolución del usuario surtió efecto
+        newStatus = 'OPERATIONAL';
+        newStatusReason = null;
+      } else {
+        // Ya estaba en OPERATIONAL
+        newStatus = 'OPERATIONAL';
+        newStatusReason = null;
+      }
     }
+
+    // 4. Actualizar estado del componente
+    await this.db
+      .update(components)
+      .set({
+        status: newStatus,
+        statusReason: newStatusReason,
+        updatedAt: new Date(),
+      })
+      .where(eq(components.id, component.id));
 
     return {
       message: evaluation.isOutOfBounds
         ? 'Telemetría procesada: ¡Alerta generada!'
         : 'Telemetría procesada exitosamente',
       log,
+      componentStatus: newStatus,
+      statusReason: newStatusReason,
       evaluation: {
         isOutOfBounds: evaluation.isOutOfBounds,
         breachType: evaluation.breachType,
       },
       alert: generatedAlert,
     };
+  }
+
+  async findAllByDevice(deviceId: string, userId: string) {
+    const [device] = await this.db
+      .select()
+      .from(devices)
+      .where(and(eq(devices.id, deviceId), eq(devices.userId, userId)));
+
+    if (!device) {
+      throw new NotFoundException(
+        'Dispositivo no encontrado o no pertenece al usuario',
+      );
+    }
+
+    return this.db
+      .select()
+      .from(telemetryLogs)
+      .where(eq(telemetryLogs.deviceId, deviceId))
+      .orderBy(desc(telemetryLogs.createdAt));
   }
 }
