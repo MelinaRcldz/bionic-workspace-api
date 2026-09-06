@@ -1,98 +1,215 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🤖 Bionic Workspace API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+REST API built with NestJS and TypeScript for managing and monitoring robotic and bionic devices during development.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Overview
 
-## Description
+Bionic Workspace is a platform designed for the development and supervision of robotic and bionic devices.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Users can register their devices and the components that make them up, configure operational thresholds, send telemetry readings and monitor
+the resulting alerts and component status.
 
-## Project setup
+Telemetry readings are evaluated against the thresholds configured for each component. When a reading falls outside the expected range, the API
+can generate an alert and update the component's operational status.
 
-```bash
-$ pnpm install
-```
+The platform is designed to help developers detect abnormal physical conditions during testing and development of their devices.
 
-## Compile and run the project
+## Features
 
-```bash
-# development
-$ pnpm run start
+- 🔐 User registration and JWT authentication.
+- 🔄 Access and refresh token management.
+- 🤖 Device management with user data isolation.
+- ⚙️ Component management associated with devices.
+- 📏 Configurable minimum and maximum thresholds.
+- 📡 Telemetry ingestion and historical telemetry.
+- 🚨 Automatic alert generation based on telemetry readings.
+- 🔎 Alert querying and resolution.
+- 📊 Automatic component operational status tracking.
+  
 
-# watch mode
-$ pnpm run start:dev
+## Getting Started
 
-# production mode
-$ pnpm run start:prod
-```
+### Prerequisites
 
-## Run tests
+Make sure you have installed:
+
+- Node.js
+- pnpm
+- Docker Desktop
+
+### Installation
+
+Clone the repository and install the dependencies:
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+git clone https://github.com/MelinaRcldz/bionic-workspace-api.git
+cd bionic-workspace-api
+pnpm install
 ```
 
-## Deployment
+### Environment Variables
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Create a `.env` file in the project root and configure the required environment variables:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+```env
+PORT=3000
+DATABASE_URL=postgres://user:password@localhost:5432/db_name
+FRONTEND_URL=http://localhost:3001
+JWT_SECRET=your_jwt_secret
+JWT_REFRESH_SECRET=your_jwt_refresh_secret
+```
+
+### Database
+
+Start the PostgreSQL container:
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+docker compose up -d
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Run the database migrations:
 
-## Resources
+```bash
+pnpm run db:migrate
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### Running the API
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Start the development server:
 
-## Support
+```bash
+pnpm run start:dev
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+The API will be available at:
 
-## Stay in touch
+```text
+http://localhost:3000
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## 🛠️ Tech Stack
 
-## License
+- **NestJS** — Backend framework.
+- **TypeScript** — Programming language.
+- **Drizzle ORM** — Database ORM and schema management.
+- **PostgreSQL** — Relational database.
+- **JWT** — Authentication with access and refresh tokens.
+- **bcrypt** — Password hashing and refresh token hashing.
+- **Docker Compose** — Local PostgreSQL environment.
+- **pnpm** — Package manager.
+  
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## Architecture
+
+                   BIONIC WORKSPACE API
+
+┌──────────┐       ┌────────────┐       ┌─────────────┐
+│   USER   │ ────▶    DEVICE     ────▶ │  COMPONENT  │
+└──────────┘       └────────────┘       └──────┬──────┘
+                                               │
+                                               ▼
+                                       ┌───────────────┐
+                                       │   TELEMETRY   │
+                                       └───────┬───────┘
+                                               │
+                               ┌───────────────┴───────────────┐
+                               ▼                               ▼
+                          IN RANGE                        OUT OF RANGE
+                               │                               │
+                               ▼                               ▼
+                         OPERATIONAL                         ALERT
+                                                               │
+                                                               ▼
+                                                       COMPONENT STATUS
+
+
+Component status
+                      ┌─────────────────┐
+                      │   OPERATIONAL   │
+                      └────────┬────────┘
+                               │
+                     out-of-range telemetry
+                               │
+                               ▼
+                      ┌─────────────────┐
+  ┌──────────────────>│    CRITICAL     │<──────────────────────┐
+  │                   └────────┬────────┘                       │
+  │                            │                                │
+  │              ┌─────────────┴─────────────┐                  │   
+  │              │                           │                  │
+  │           normal                  alert resolution          │
+  │          telemetry               + condition persists       │
+  │              │                           │                  │
+out-of-          ▼                           ▼                out-of-
+ range    ┌──────┴──────────────┐   ┌────────┴──────────┐      range
+  │       │ WARNING / RECOVERY  │   │ WARNING /         │       │
+  │       │                     │   │ PERSISTENT_AFTER_ │       │
+  │       └───┬─────┬───────────┘   │ RESOLUTION        │       │
+  │           │     │               └─────┬──────┬──────┘       │
+  │           │     │                     │      │              │
+  └───────────┘     └────   normal   ─────┘      └──────────────┘             
+                           telemetry             
+                               │                                         
+                               ▼                                       
+                        ┌─────────────┐                  
+                        │ OPERATIONAL │            
+                        └─────────────┘            
+
+
+## API Endpoints
+
+### Authentication
+
+| Method | Endpoint | Description | Auth |
+|---|---|---|---|
+| `POST` | `/auth/register` | Register a new user. | Public |
+| `POST` | `/auth/login` | Authenticate a user and obtain access and refresh tokens. | Public |
+| `POST` | `/auth/refresh` | Generate new access and refresh tokens using a valid refresh token. | Public |
+| `GET` | `/auth/me` | Get the authenticated user's information. | JWT |
+
+### Devices
+
+| Method | Endpoint | Description | Auth |
+|---|---|---|---|
+| `POST` | `/devices` | Create a new device. | JWT |
+| `GET` | `/devices` | Get all devices belonging to the authenticated user. | JWT |
+| `GET` | `/devices/:id` | Get a specific device owned by the authenticated user. | JWT |
+| `PATCH` | `/devices/:id` | Update a device owned by the authenticated user. | JWT |
+| `DELETE` | `/devices/:id` | Delete a device owned by the authenticated user. | JWT |
+
+### Components
+
+| Method | Endpoint | Description | Auth |
+|---|---|---|---|
+| `POST` | `/devices/:deviceId/components` | Create a component associated with a device. | JWT |
+| `GET` | `/devices/:deviceId/components` | Get all components belonging to a device. | JWT |
+| `GET` | `/devices/:deviceId/components/:id` | Get a specific component from a device. | JWT |
+| `PATCH` | `/devices/:deviceId/components/:id` | Update a component from a device. | JWT |
+| `DELETE` | `/devices/:deviceId/components/:id` | Delete a component from a device. | JWT |
+
+### Telemetry
+
+| Method | Endpoint | Description | Auth |
+|---|---|---|---|
+| `POST` | `/devices/:id/telemetry` | Submit a telemetry reading for a device component. | JWT |
+| `GET` | `/devices/:id/telemetry` | Get the telemetry history of a device. | JWT |
+
+### Alerts
+
+| Method | Endpoint | Description | Auth |
+|---|---|---|---|
+| `GET` | `/devices/:id/alerts` | Get all alerts associated with a device. | JWT |
+| `GET` | `/alerts/:id` | Get a specific alert. | JWT |
+| `PATCH` | `/alerts/:id/resolve` | Resolve an alert and update the affected component's status based on its latest telemetry. | JWT |
+
+
+## Telemetry & Alert Flow
+
+Telemetry readings are evaluated against the thresholds configured for each
+component. Out-of-range readings can generate alerts and update the
+component's operational status.
+
+A resolved alert does not necessarily mean that the physical condition has
+returned to normal. If the abnormal condition persists, the component can
+remain in `WARNING / PERSISTENT_AFTER_RESOLUTION` until normal telemetry is
+received.
