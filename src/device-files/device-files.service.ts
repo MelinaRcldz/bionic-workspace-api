@@ -115,4 +115,58 @@ export class DeviceFilesService {
       file,
     };
   }
+
+  /**
+   * Registra un nuevo archivo de documentación técnica para el dispositivo
+   */
+  async uploadDocumentation(
+    deviceId: string,
+    userId: string,
+    file: UploadedFile,
+  ) {
+    if (!file) {
+      throw new BadRequestException('Se requiere adjuntar un archivo');
+    }
+
+    // 1. Validar ownership
+    await this.verifyDeviceOwnership(deviceId, userId);
+
+    // 2. Guardar el archivo físicamente dentro de la subcarpeta 'documentation'
+    const storageKey = await this.storageService.saveFile(
+      file,
+      'documentation',
+    );
+
+    // 3. Persistir metadata con category = 'DOCUMENTATION'
+    const [newFile] = await this.db
+      .insert(deviceFiles)
+      .values({
+        deviceId,
+        storageKey,
+        originalName: file.originalname,
+        mimeType: file.mimetype,
+        size: file.size,
+        category: 'DOCUMENTATION',
+      })
+      .returning();
+
+    return newFile;
+  }
+
+  /**
+   * Obtiene la lista de documentos técnicos asociados al dispositivo
+   */
+  async getDocumentation(deviceId: string, userId: string) {
+    await this.verifyDeviceOwnership(deviceId, userId);
+
+    return this.db
+      .select()
+      .from(deviceFiles)
+      .where(
+        and(
+          eq(deviceFiles.deviceId, deviceId),
+          eq(deviceFiles.category, 'DOCUMENTATION'),
+        ),
+      );
+  }
 }

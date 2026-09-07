@@ -52,6 +52,36 @@ export class DeviceFilesController {
   }
 
   /**
+   * POST /devices/:deviceId/documentation
+   * Sube un archivo de documentación técnica (PDF, manuales, esquemas)
+   */
+  @Post('documentation')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadDocumentation(
+    @Param('deviceId', ParseUUIDPipe) deviceId: string,
+    @NestUploadedFile() file: UploadedFile,
+    @Req() req: any,
+  ) {
+    return this.deviceFilesService.uploadDocumentation(
+      deviceId,
+      req.user.id,
+      file,
+    );
+  }
+
+  /**
+   * GET /devices/:deviceId/documentation
+   * Obtiene la lista de documentos técnicos del dispositivo
+   */
+  @Get('documentation')
+  async getDocumentation(
+    @Param('deviceId', ParseUUIDPipe) deviceId: string,
+    @Req() req: any,
+  ) {
+    return this.deviceFilesService.getDocumentation(deviceId, req.user.id);
+  }
+
+  /**
    * GET /devices/:deviceId/files/:fileId/download
    * Descarga o sirve el archivo protegido
    */
