@@ -32,7 +32,7 @@
 
 ## 📁 FASE 1E — Archivos & Representación
 - [x] 1. Persistencia de archivos asociados a dispositivos (`device_files`) y metadata.
-- [ ] 2. Servicio de almacenamiento y subida de archivos.
+- [x] 2. Servicio de almacenamiento local de archivos.
 - [ ] 3. Subida y consulta de representación visual 3/4 del dispositivo.
 - [ ] 4. Subida y consulta de documentación técnica asociada al dispositivo.
 - [ ] 5. Eliminación de archivos asociados al dispositivo (`DELETE /devices/:id/files/:fileId`).
