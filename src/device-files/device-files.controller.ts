@@ -2,6 +2,7 @@ import {
   Controller,
   Post,
   Get,
+  Delete,
   Param,
   UseGuards,
   Req,
@@ -106,5 +107,22 @@ export class DeviceFilesController {
     );
 
     return res.sendFile(absolutePath);
+  }
+  
+  /**
+   * DELETE /devices/:deviceId/files/:fileId
+   * Elimina un archivo (representación o documentación) perteneciente al dispositivo
+   */
+  @Delete('files/:fileId')
+  async deleteFile(
+    @Param('deviceId', ParseUUIDPipe) deviceId: string,
+    @Param('fileId', ParseUUIDPipe) fileId: string,
+    @Req() req: any,
+  ) {
+    return this.deviceFilesService.deleteFile(
+      fileId,
+      deviceId,
+      req.user.id,
+    );
   }
 }

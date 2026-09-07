@@ -169,4 +169,35 @@ export class DeviceFilesService {
         ),
       );
   }
+
+  /**
+   * Elimina un archivo asociado a un dispositivo (físicamente de disco y de la base de datos)
+   */
+  async deleteFile(fileId: string, deviceId: string, userId: string) {
+    // 1. Validar ownership del dispositivo
+    await this.verifyDeviceOwnership(deviceId, userId);
+
+    // 2. Buscar el archivo específico del dispositivo
+    const [file] = await this.db
+      .select()
+      .from(deviceFiles)
+      .where(
+        and(
+          eq(deviceFiles.id, fileId),
+          eq(deviceFiles.deviceId, deviceId),
+        ),
+      );
+
+    if (!file) {
+      throw new NotFoundException('Archivo no encontrado para este dispositivo');
+    }
+
+    // 3. Eliminar el archivo físicamente de disco mediante el StorageService
+    await this.storageService.deleteFile(file.storageKey);
+
+    // 4. Eliminar el registro en la base de datos
+    await this.db.delete(deviceFiles).where(eq(deviceFiles.id, fileId));
+
+    return { message: 'Archivo eliminado correctamente' };
+  }
 }
