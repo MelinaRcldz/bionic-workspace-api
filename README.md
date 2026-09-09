@@ -5,13 +5,10 @@ REST API built with NestJS and TypeScript for managing and monitoring robotic an
 ## Overview
 
 Bionic Workspace is a platform designed for the development and supervision of robotic and bionic devices.
-
 Users can register their devices and the components that make them up, configure operational thresholds, send telemetry readings and monitor
 the resulting alerts and component status.
-
 Telemetry readings are evaluated against the thresholds configured for each component. When a reading falls outside the expected range, the API
 can generate an alert and update the component's operational status.
-
 The platform is designed to help developers detect abnormal physical conditions during testing and development of their devices.
 
 ## Features
@@ -25,6 +22,8 @@ The platform is designed to help developers detect abnormal physical conditions 
 - 🚨 Automatic alert generation based on telemetry readings.
 - 🔎 Alert querying and resolution.
 - 📊 Automatic component operational status tracking.
+- 📁 Device visual representation and technical documentation management.
+- 🛡️ File upload validation with supported file types and size limits.
   
 
 ## Getting Started
@@ -100,7 +99,7 @@ http://localhost:3000
   
 
 ## Architecture
-
+```
                    BIONIC WORKSPACE API
 
 ┌──────────┐       ┌────────────┐       ┌─────────────┐
@@ -124,37 +123,37 @@ http://localhost:3000
 
 
 Component status
-                      ┌─────────────────┐
-                      │   OPERATIONAL   │
-                      └────────┬────────┘
-                               │
-                     out-of-range telemetry
-                               │
-                               ▼
-                      ┌─────────────────┐
-  ┌──────────────────>│    CRITICAL     │<──────────────────────┐
-  │                   └────────┬────────┘                       │
-  │                            │                                │
-  │              ┌─────────────┴─────────────┐                  │   
-  │              │                           │                  │
-  │           normal                  alert resolution          │
-  │          telemetry               + condition persists       │
-  │              │                           │                  │
-out-of-          ▼                           ▼                out-of-
- range    ┌──────┴──────────────┐   ┌────────┴──────────┐      range
-  │       │ WARNING / RECOVERY  │   │ WARNING /         │       │
-  │       │                     │   │ PERSISTENT_AFTER_ │       │
-  │       └───┬─────┬───────────┘   │ RESOLUTION        │       │
-  │           │     │               └─────┬──────┬──────┘       │
-  │           │     │                     │      │              │
-  └───────────┘     └────   normal   ─────┘      └──────────────┘             
-                           telemetry             
-                               │                                         
-                               ▼                                       
-                        ┌─────────────┐                  
-                        │ OPERATIONAL │            
-                        └─────────────┘            
-
+                        ┌─────────────────┐
+                        │   OPERATIONAL   │
+                        └────────┬────────┘
+                                 │
+                       out-of-range telemetry
+                                 │
+                                 ▼
+                        ┌─────────────────┐
+  ┌────────────────────>│    CRITICAL     │<──────────────────────┐
+  │                     └────────┬────────┘                       │
+  │                              │                                │
+  │                ┌─────────────┴─────────────┐                  │   
+  │                │                           │                  │
+  │             normal                  alert resolution          │
+  │            telemetry              + condition persists        │
+  │                │                           │                  │
+out-of-            ▼                           ▼                out-of-
+ range      ┌──────┴─────────┐        ┌────────┴──────────┐      range
+  │         │  WARNING /     │        │ WARNING /         │       │
+  │         │  RECOVERY      │        │ PERSISTENT_AFTER_ │       │
+  │         └───┬─────┬──────┘        │ RESOLUTION        │       │
+  │             │     │               └─────┬──────┬──────┘       │
+  │             │     │                     │      │              │
+  └─────────────┘     └────   normal   ─────┘      └──────────────┘             
+                             telemetry             
+                                │                                         
+                                ▼                                       
+                          ┌─────────────┐                  
+                          │ OPERATIONAL │            
+                          └─────────────┘            
+```
 
 ## API Endpoints
 
@@ -202,6 +201,17 @@ out-of-          ▼                           ▼                out-of-
 | `GET` | `/alerts/:id` | Get a specific alert. | JWT |
 | `PATCH` | `/alerts/:id/resolve` | Resolve an alert and update the affected component's status based on its latest telemetry. | JWT |
 
+### Files
+
+| Method | Endpoint | Description | Auth |
+|---|---|---|---|
+| `POST` | `/devices/:deviceId/representation` | Upload a visual representation of a device. | JWT |
+| `GET` | `/devices/:deviceId/representation` | Get the visual representations associated with a device. | JWT |
+| `POST` | `/devices/:deviceId/documentation` | Upload technical documentation associated with a device. | JWT |
+| `GET` | `/devices/:deviceId/documentation` | Get the technical documentation associated with a device. | JWT |
+| `GET` | `/devices/:deviceId/files` | Get all files associated with a device, grouped by category. | JWT |
+| `GET` | `/devices/:deviceId/files/:fileId/download` | Download a file associated with a device. | JWT |
+| `DELETE` | `/devices/:deviceId/files/:fileId` | Delete a file associated with a device. | JWT |
 
 ## Telemetry & Alert Flow
 
