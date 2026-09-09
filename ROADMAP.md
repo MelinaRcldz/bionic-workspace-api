@@ -30,9 +30,15 @@
 - [x] 4. Resolución de alertas (`PATCH /alerts/:id/resolve`).
 - [x] 5. Estado operativo de componentes según telemetría y alertas.
 
-## 📁 FASE 1E — Archivos MVP (Holograma & Docs)
-- [ ] Subida de imagen vista 3/4 (`REPRESENTATION`).
-- [ ] Subida y descarga de archivos técnicos (`DOCUMENTATION`).
+## 📁 FASE 1E — Archivos & Representación
+- [x] 1. Persistencia de archivos asociados a dispositivos (`device_files`) y metadata.
+- [x] 2. Servicio de almacenamiento local de archivos.
+- [x] 3. Subida y consulta de representación visual 3/4 del dispositivo.
+- [x] 4. Subida y consulta de documentación técnica asociada al dispositivo.
+- [x] 5. Eliminación de archivos asociados al dispositivo (`DELETE /devices/:id/files/:fileId`).
+- [x] 6. Validaciones de archivos: tipos MIME y tamaño máximo.
+- [x] 7. Ownership y autorización de archivos según usuario/dispositivo.
+- [x] 8. Consulta agrupada de archivos asociados al dispositivo.
 
 ## 🔮 FASE 1F — Integración Frontend
 - [ ] Migración de localStorage a peticiones HTTP.

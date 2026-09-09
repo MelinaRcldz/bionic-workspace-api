@@ -9,6 +9,8 @@ import { DevicesModule } from './devices/devices.module';
 import { ComponentsModule } from './components/components.module';
 import { TelemetryModule } from './telemetry/telemetry.module';
 import { AlertsModule } from './alerts/alerts.module';
+import { StorageModule } from './storage/storage.module';
+import { DeviceFilesModule } from './device-files/device-files.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { AlertsModule } from './alerts/alerts.module';
     ComponentsModule,
     TelemetryModule,
     AlertsModule,
+    StorageModule,
+    DeviceFilesModule,
   ],
   providers: [
     {
