@@ -36,7 +36,7 @@
 - [x] 3. Subida y consulta de representación visual 3/4 del dispositivo.
 - [x] 4. Subida y consulta de documentación técnica asociada al dispositivo.
 - [x] 5. Eliminación de archivos asociados al dispositivo (`DELETE /devices/:id/files/:fileId`).
-- [ ] 6. Validaciones de archivos: tipos MIME y tamaño máximo.
+- [x] 6. Validaciones de archivos: tipos MIME y tamaño máximo.
 - [ ] 7. Ownership y autorización de archivos según usuario/dispositivo.
 - [ ] 8. Consulta agrupada de archivos asociados al dispositivo.
 

@@ -35,6 +35,29 @@ export class DeviceFilesService {
     }
     return device;
   }
+  /**
+   * Helper privado para validar tamaño y tipo MIME de los archivos adjuntos
+   */
+  private validateFile(file: UploadedFile, allowedMimeTypes: string[], maxSizeMB = 10) {
+    if (!file) {
+      throw new BadRequestException('Se requiere adjuntar un archivo');
+    }
+
+    // 1. Validar tamaño máximo
+    const maxSizeBytes = maxSizeMB * 1024 * 1024;
+    if (file.size > maxSizeBytes) {
+      throw new BadRequestException(
+        `El archivo excede el tamaño máximo permitido de ${maxSizeMB}MB`,
+      );
+    }
+
+    // 2. Validar tipo MIME
+    if (!allowedMimeTypes.includes(file.mimetype)) {
+      throw new BadRequestException(
+        `Tipo de archivo no permitido (${file.mimetype}). Tipos válidos: ${allowedMimeTypes.join(', ')}`,
+      );
+    }
+  }
 
   /**
    * Registra una nueva representación visual 3/4 para el dispositivo
@@ -44,20 +67,19 @@ export class DeviceFilesService {
     userId: string,
     file: UploadedFile,
   ) {
-    if (!file) {
-      throw new BadRequestException('Se requiere adjuntar un archivo');
-    }
+    // 1. Validar tipo MIME y tamaño (máx 5MB)
+    this.validateFile(file, ['image/png', 'image/jpeg', 'image/webp'], 5);
 
-    // 1. Validar que el dispositivo pertenezca al usuario autenticado
+    // 2. Validar que el dispositivo pertenezca al usuario autenticado
     await this.verifyDeviceOwnership(deviceId, userId);
 
-    // 2. Guardar el archivo físicamente en disco dentro de la carpeta 'representations'
+    // 3. Guardar el archivo físicamente en disco dentro de la carpeta 'representations'
     const storageKey = await this.storageService.saveFile(
       file,
       'representations',
     );
 
-    // 3. Insertar la metadata en la base de datos
+    // 4. Insertar la metadata en la base de datos
     const [newFile] = await this.db
       .insert(deviceFiles)
       .values({
@@ -124,20 +146,30 @@ export class DeviceFilesService {
     userId: string,
     file: UploadedFile,
   ) {
-    if (!file) {
-      throw new BadRequestException('Se requiere adjuntar un archivo');
-    }
+    // 1. Validar tipo MIME y tamaño (máx 10MB)
+    this.validateFile(
+      file,
+      [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'image/png',
+        'image/jpeg',
+        'image/webp',
+      ],
+      10,
+    );
 
-    // 1. Validar ownership
+    // 2. Validar ownership
     await this.verifyDeviceOwnership(deviceId, userId);
 
-    // 2. Guardar el archivo físicamente dentro de la subcarpeta 'documentation'
+    // 3. Guardar el archivo físicamente dentro de la subcarpeta 'documentation'
     const storageKey = await this.storageService.saveFile(
       file,
       'documentation',
     );
 
-    // 3. Persistir metadata con category = 'DOCUMENTATION'
+    // 4. Persistir metadata con category = 'DOCUMENTATION'
     const [newFile] = await this.db
       .insert(deviceFiles)
       .values({
