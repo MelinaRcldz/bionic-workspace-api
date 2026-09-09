@@ -20,7 +20,7 @@ import type { UploadedFile } from '../storage/storage.service';
 @UseGuards(JwtAuthGuard)
 @Controller('devices/:deviceId')
 export class DeviceFilesController {
-  constructor(private readonly deviceFilesService: DeviceFilesService) {}
+  constructor(private readonly deviceFilesService: DeviceFilesService) { }
 
   /**
    * POST /devices/:deviceId/representation
@@ -108,7 +108,7 @@ export class DeviceFilesController {
 
     return res.sendFile(absolutePath);
   }
-  
+
   /**
    * DELETE /devices/:deviceId/files/:fileId
    * Elimina un archivo (representación o documentación) perteneciente al dispositivo
@@ -121,6 +121,17 @@ export class DeviceFilesController {
   ) {
     return this.deviceFilesService.deleteFile(
       fileId,
+      deviceId,
+      req.user.id,
+    );
+  }
+
+  @Get('files')
+  async getAllDeviceFiles(
+    @Param('deviceId', ParseUUIDPipe) deviceId: string,
+    @Req() req: any,
+  ) {
+    return this.deviceFilesService.getAllDeviceFiles(
       deviceId,
       req.user.id,
     );

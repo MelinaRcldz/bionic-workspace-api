@@ -232,4 +232,25 @@ export class DeviceFilesService {
 
     return { message: 'Archivo eliminado correctamente' };
   }
+
+  /**
+   * Obtiene la totalidad de archivos (representaciones y documentación) asociados a un dispositivo
+   */
+  async getAllDeviceFiles(deviceId: string, userId: string) {
+    // 1. Validar ownership del dispositivo
+    await this.verifyDeviceOwnership(deviceId, userId);
+
+    // 2. Traer todos los archivos pertenecientes al dispositivo
+    const files = await this.db
+      .select()
+      .from(deviceFiles)
+      .where(eq(deviceFiles.deviceId, deviceId));
+
+    // 3. Devolver organizados por categoría
+    return {
+      representations: files.filter((f) => f.category === 'REPRESENTATION'),
+      documentation: files.filter((f) => f.category === 'DOCUMENTATION'),
+      total: files.length,
+    };
+  }
 }

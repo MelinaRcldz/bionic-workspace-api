@@ -37,8 +37,8 @@
 - [x] 4. Subida y consulta de documentación técnica asociada al dispositivo.
 - [x] 5. Eliminación de archivos asociados al dispositivo (`DELETE /devices/:id/files/:fileId`).
 - [x] 6. Validaciones de archivos: tipos MIME y tamaño máximo.
-- [ ] 7. Ownership y autorización de archivos según usuario/dispositivo.
-- [ ] 8. Consulta agrupada de archivos asociados al dispositivo.
+- [x] 7. Ownership y autorización de archivos según usuario/dispositivo.
+- [x] 8. Consulta agrupada de archivos asociados al dispositivo.
 
 ## 🔮 FASE 1F — Integración Frontend
 - [ ] Migración de localStorage a peticiones HTTP.
