@@ -40,11 +40,19 @@
 - [x] 7. Ownership y autorización de archivos según usuario/dispositivo.
 - [x] 8. Consulta agrupada de archivos asociados al dispositivo.
 
-## 🔮 FASE 1F — Integración Frontend
+## 🧪 FASE 1F — Testing & CI
+
+- [x] 1. Configuración del entorno de testing & Jest.
+- [ ] 2. Tests unitarios de lógica crítica (DeviceFilesService, TelemetryService, AlertsService).
+- [ ] 3. Tests e2e de flujos principales (Auth, Devices, Files, Telemetry).
+- [ ] 4. Cobertura de seguridad, ownership y validaciones.
+- [ ] 5. CI básico con GitHub Actions (lint, build, test).
+
+## 🔮 FASE 1G — Integración Frontend
 - [ ] Migración de localStorage a peticiones HTTP.
 - [ ] Vistas: Login, Registro, Dashboard "Mis Robots" y Detalle Holográfico.
 
-## 📚 FASE 1G — Documentación & Deploy
+## 📚 FASE 1H — Documentación & Deploy
 - [ ] Swagger UI en `/api/docs`.
 - [ ] README.md completo con arquitectura e instrucciones.
 - [ ] Deploy Cloud de API + PostgreSQL en producción.
