@@ -43,9 +43,9 @@
 ## 🧪 FASE 1F — Testing & CI
 
 - [x] 1. Configuración del entorno de testing & Jest.
-- [ ] 2. Tests unitarios de lógica crítica (DeviceFilesService, TelemetryService, AlertsService).
+- [x] 2. Tests unitarios de lógica crítica (DeviceFilesService, TelemetryService, AlertsService).
 - [ ] 3. Tests e2e de flujos principales (Auth, Devices, Files, Telemetry).
-- [ ] 4. Cobertura de seguridad, ownership y validaciones.
+- [x] 4. Cobertura de seguridad, ownership y validaciones.
 - [ ] 5. CI básico con GitHub Actions (lint, build, test).
 
 ## 🔮 FASE 1G — Integración Frontend
