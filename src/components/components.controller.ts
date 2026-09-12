@@ -13,6 +13,7 @@ import { ComponentsService } from './components.service';
 import { CreateComponentDto } from './dto/create-component.dto';
 import { UpdateComponentDto } from './dto/update-component.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from '../auth/types/authenticated-request';
 
 @UseGuards(JwtAuthGuard)
 @Controller('devices/:deviceId/components')
@@ -23,13 +24,20 @@ export class ComponentsController {
   create(
     @Param('deviceId') deviceId: string,
     @Body() createComponentDto: CreateComponentDto,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
   ) {
-    return this.componentsService.create(deviceId, req.user.id, createComponentDto);
+    return this.componentsService.create(
+      deviceId,
+      req.user.id,
+      createComponentDto,
+    );
   }
 
   @Get()
-  findAll(@Param('deviceId') deviceId: string, @Req() req: any) {
+  findAll(
+    @Param('deviceId') deviceId: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
     return this.componentsService.findAllByDevice(deviceId, req.user.id);
   }
 
@@ -37,7 +45,7 @@ export class ComponentsController {
   findOne(
     @Param('deviceId') deviceId: string,
     @Param('id') id: string,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
   ) {
     return this.componentsService.findOne(id, deviceId, req.user.id);
   }
@@ -47,16 +55,21 @@ export class ComponentsController {
     @Param('deviceId') deviceId: string,
     @Param('id') id: string,
     @Body() updateComponentDto: UpdateComponentDto,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
   ) {
-    return this.componentsService.update(id, deviceId, req.user.id, updateComponentDto);
+    return this.componentsService.update(
+      id,
+      deviceId,
+      req.user.id,
+      updateComponentDto,
+    );
   }
 
   @Delete(':id')
   remove(
     @Param('deviceId') deviceId: string,
     @Param('id') id: string,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
   ) {
     return this.componentsService.remove(id, deviceId, req.user.id);
   }
