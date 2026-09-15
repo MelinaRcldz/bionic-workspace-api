@@ -18,7 +18,7 @@ export class DeviceFilesService {
     private readonly db: PostgresJsDatabase,
     private readonly storageService: StorageService,
   ) {}
-  
+
   /**
    * Helper privado para verificar ownership (device.id + device.userId)
    */
@@ -38,7 +38,11 @@ export class DeviceFilesService {
   /**
    * Helper privado para validar tamaño y tipo MIME de los archivos adjuntos
    */
-  private validateFile(file: UploadedFile, allowedMimeTypes: string[], maxSizeMB = 10) {
+  private validateFile(
+    file: UploadedFile | undefined,
+    allowedMimeTypes: string[],
+    maxSizeMB = 10,
+  ): asserts file is UploadedFile {
     if (!file) {
       throw new BadRequestException('Se requiere adjuntar un archivo');
     }
@@ -65,7 +69,7 @@ export class DeviceFilesService {
   async uploadRepresentation(
     deviceId: string,
     userId: string,
-    file: UploadedFile,
+    file: UploadedFile | undefined,
   ) {
     // 1. Validar tipo MIME y tamaño (máx 5MB)
     this.validateFile(file, ['image/png', 'image/jpeg', 'image/webp'], 5);
@@ -122,14 +126,13 @@ export class DeviceFilesService {
       .select()
       .from(deviceFiles)
       .where(
-        and(
-          eq(deviceFiles.id, fileId),
-          eq(deviceFiles.deviceId, deviceId),
-        ),
+        and(eq(deviceFiles.id, fileId), eq(deviceFiles.deviceId, deviceId)),
       );
 
     if (!file) {
-      throw new NotFoundException('Archivo no encontrado para este dispositivo');
+      throw new NotFoundException(
+        'Archivo no encontrado para este dispositivo',
+      );
     }
 
     return {
@@ -144,7 +147,7 @@ export class DeviceFilesService {
   async uploadDocumentation(
     deviceId: string,
     userId: string,
-    file: UploadedFile,
+    file: UploadedFile | undefined,
   ) {
     // 1. Validar tipo MIME y tamaño (máx 10MB)
     this.validateFile(
@@ -214,14 +217,13 @@ export class DeviceFilesService {
       .select()
       .from(deviceFiles)
       .where(
-        and(
-          eq(deviceFiles.id, fileId),
-          eq(deviceFiles.deviceId, deviceId),
-        ),
+        and(eq(deviceFiles.id, fileId), eq(deviceFiles.deviceId, deviceId)),
       );
 
     if (!file) {
-      throw new NotFoundException('Archivo no encontrado para este dispositivo');
+      throw new NotFoundException(
+        'Archivo no encontrado para este dispositivo',
+      );
     }
 
     // 3. Eliminar el archivo físicamente de disco mediante el StorageService

@@ -31,7 +31,7 @@ export class DeviceFilesController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadRepresentation(
     @Param('deviceId', ParseUUIDPipe) deviceId: string,
-    @NestUploadedFile() file: UploadedFile,
+    @NestUploadedFile() file: UploadedFile | undefined,
     @Req() req: AuthenticatedRequest,
   ) {
     return this.deviceFilesService.uploadRepresentation(
@@ -61,7 +61,7 @@ export class DeviceFilesController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadDocumentation(
     @Param('deviceId', ParseUUIDPipe) deviceId: string,
-    @NestUploadedFile() file: UploadedFile,
+    @NestUploadedFile() file: UploadedFile | undefined,
     @Req() req: AuthenticatedRequest,
   ) {
     return this.deviceFilesService.uploadDocumentation(

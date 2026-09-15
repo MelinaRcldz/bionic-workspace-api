@@ -3,6 +3,22 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from './../src/app.module';
 
+type AuthResponse = {
+  accessToken: string;
+};
+
+type IdResponse = {
+  id: string;
+};
+
+type MeResponse = {
+  email: string;
+};
+
+type TelemetryResponse = {
+  componentStatus: string;
+};
+
 describe('Auth Flow (e2e)', () => {
   let app: INestApplication;
 
@@ -72,9 +88,11 @@ describe('Auth Flow (e2e)', () => {
       })
       .expect(200);
 
-    expect(response.body.accessToken).toBeDefined();
+    const body = response.body as AuthResponse;
 
-    accessToken = response.body.accessToken;
+    expect(body.accessToken).toBeDefined();
+
+    accessToken = body.accessToken;
   });
 
   it('GET /auth/me -> debe permitir acceder al perfil con JWT', async () => {
@@ -83,7 +101,9 @@ describe('Auth Flow (e2e)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200);
 
-    expect(response.body.email).toBe(email);
+    const body = response.body as MeResponse;
+
+    expect(body.email).toBe(email);
   });
 
   it('POST /devices -> debe crear un dispositivo autenticado', async () => {
@@ -97,9 +117,11 @@ describe('Auth Flow (e2e)', () => {
       })
       .expect(201);
 
-    expect(response.body.id).toBeDefined();
+    const body = response.body as IdResponse;
 
-    deviceId = response.body.id;
+    expect(body.id).toBeDefined();
+
+    deviceId = body.id;
   });
 
   it('POST /devices/:deviceId/components -> debe crear un componente', async () => {
@@ -117,9 +139,11 @@ describe('Auth Flow (e2e)', () => {
       })
       .expect(201);
 
-    expect(response.body.id).toBeDefined();
+    const body = response.body as IdResponse;
 
-    componentId = response.body.id;
+    expect(body.id).toBeDefined();
+
+    componentId = body.id;
   });
 
   it('POST /devices/:deviceId/telemetry -> debe procesar telemetría válida', async () => {
@@ -132,8 +156,10 @@ describe('Auth Flow (e2e)', () => {
       })
       .expect(201);
 
-    expect(response.body).toBeDefined();
-    expect(response.body.componentStatus).toBe('OPERATIONAL');
+    const body = response.body as TelemetryResponse;
+
+    expect(body).toBeDefined();
+    expect(body.componentStatus).toBe('OPERATIONAL');
   });
 
   it('POST /devices/:deviceId/representation -> debe subir una representación', async () => {

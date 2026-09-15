@@ -2,6 +2,35 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { TelemetryService } from './telemetry.service';
 import { DRIZZLE } from '../database/database.module';
+import { CreateTelemetryDto } from './dto/create-telemetry.dto';
+import { components } from '../database/schema';
+
+const createMockTelemetryDto = (
+  overrides: Partial<CreateTelemetryDto> = {},
+): CreateTelemetryDto => ({
+  componentId: 'component-1',
+  value: '50',
+  ...overrides,
+});
+
+const createMockComponent = (
+  overrides: Partial<typeof components.$inferSelect> = {},
+): typeof components.$inferSelect => ({
+  id: 'component-1',
+  deviceId: 'device-1',
+  name: 'Componente de prueba',
+  type: 'SENSOR',
+  minThreshold: '10',
+  maxThreshold: '100',
+  minSeverity: 'WARNING',
+  maxSeverity: 'CRITICAL',
+  status: 'OPERATIONAL',
+  statusReason: null,
+  unit: null,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  ...overrides,
+});
 
 describe('TelemetryService', () => {
   let service: TelemetryService;
@@ -16,18 +45,6 @@ describe('TelemetryService', () => {
     id: 'device-1',
     userId: 'user-1',
   };
-
-  const createMockComponent = (overrides = {}) => ({
-    id: 'component-1',
-    deviceId: 'device-1',
-    minThreshold: '10',
-    maxThreshold: '100',
-    minSeverity: 'WARNING',
-    maxSeverity: 'CRITICAL',
-    status: 'OPERATIONAL',
-    statusReason: null,
-    ...overrides,
-  });
 
   const mockLog = {
     id: 'log-1',
@@ -50,10 +67,7 @@ describe('TelemetryService', () => {
     jest.clearAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        TelemetryService,
-        { provide: DRIZZLE, useValue: mockDb },
-      ],
+      providers: [TelemetryService, { provide: DRIZZLE, useValue: mockDb }],
     }).compile();
 
     service = module.get<TelemetryService>(TelemetryService);
@@ -71,10 +85,7 @@ describe('TelemetryService', () => {
         }),
       });
 
-      const dto = {
-        componentId: 'component-1',
-        value: '50',
-      } as any;
+      const dto = createMockTelemetryDto();
 
       await expect(
         service.processTelemetry('device-1', 'user-1', dto),
@@ -94,10 +105,7 @@ describe('TelemetryService', () => {
           }),
         });
 
-      const dto = {
-        componentId: 'component-1',
-        value: '50',
-      } as any;
+      const dto = createMockTelemetryDto();
 
       await expect(
         service.processTelemetry('device-1', 'user-1', dto),
@@ -131,16 +139,9 @@ describe('TelemetryService', () => {
         }),
       });
 
-      const dto = {
-        componentId: 'component-1',
-        value: '50',
-      } as any;
+      const dto = createMockTelemetryDto();
 
-      const result = await service.processTelemetry(
-        'device-1',
-        'user-1',
-        dto,
-      );
+      const result = await service.processTelemetry('device-1', 'user-1', dto);
 
       expect(result.componentStatus).toBe('OPERATIONAL');
       expect(result.statusReason).toBeNull();
@@ -184,16 +185,11 @@ describe('TelemetryService', () => {
         }),
       });
 
-      const dto = {
-        componentId: 'component-1',
+      const dto = createMockTelemetryDto({
         value: '5',
-      } as any;
+      });
 
-      const result = await service.processTelemetry(
-        'device-1',
-        'user-1',
-        dto,
-      );
+      const result = await service.processTelemetry('device-1', 'user-1', dto);
 
       expect(result.evaluation.isOutOfBounds).toBe(true);
       expect(result.evaluation.breachType).toBe('UNDER_MIN');
@@ -237,16 +233,11 @@ describe('TelemetryService', () => {
         }),
       });
 
-      const dto = {
-        componentId: 'component-1',
+      const dto = createMockTelemetryDto({
         value: '150',
-      } as any;
+      });
 
-      const result = await service.processTelemetry(
-        'device-1',
-        'user-1',
-        dto,
-      );
+      const result = await service.processTelemetry('device-1', 'user-1', dto);
 
       expect(result.evaluation.isOutOfBounds).toBe(true);
       expect(result.evaluation.breachType).toBe('OVER_MAX');
@@ -285,16 +276,9 @@ describe('TelemetryService', () => {
         }),
       });
 
-      const dto = {
-        componentId: 'component-1',
-        value: '50',
-      } as any;
+      const dto = createMockTelemetryDto();
 
-      const result = await service.processTelemetry(
-        'device-1',
-        'user-1',
-        dto,
-      );
+      const result = await service.processTelemetry('device-1', 'user-1', dto);
 
       expect(result.componentStatus).toBe('WARNING');
       expect(result.statusReason).toBe('RECOVERY');
@@ -331,16 +315,9 @@ describe('TelemetryService', () => {
         }),
       });
 
-      const dto = {
-        componentId: 'component-1',
-        value: '50',
-      } as any;
+      const dto = createMockTelemetryDto();
 
-      const result = await service.processTelemetry(
-        'device-1',
-        'user-1',
-        dto,
-      );
+      const result = await service.processTelemetry('device-1', 'user-1', dto);
 
       expect(result.componentStatus).toBe('OPERATIONAL');
       expect(result.statusReason).toBeNull();
@@ -377,16 +354,9 @@ describe('TelemetryService', () => {
         }),
       });
 
-      const dto = {
-        componentId: 'component-1',
-        value: '50',
-      } as any;
+      const dto = createMockTelemetryDto();
 
-      const result = await service.processTelemetry(
-        'device-1',
-        'user-1',
-        dto,
-      );
+      const result = await service.processTelemetry('device-1', 'user-1', dto);
 
       expect(result.componentStatus).toBe('OPERATIONAL');
       expect(result.statusReason).toBeNull();

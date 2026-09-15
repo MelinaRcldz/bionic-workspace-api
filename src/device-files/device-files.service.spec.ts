@@ -3,6 +3,19 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { DeviceFilesService } from './device-files.service';
 import { DRIZZLE } from '../database/database.module';
 import { StorageService } from '../storage/storage.service';
+import type { UploadedFile } from '../storage/storage.service';
+
+const createMockFile = (
+  overrides: Partial<UploadedFile> = {},
+): UploadedFile => ({
+  fieldname: 'file',
+  originalname: 'test.png',
+  encoding: '7bit',
+  mimetype: 'image/png',
+  size: 1024,
+  buffer: Buffer.from('test'),
+  ...overrides,
+});
 
 describe('DeviceFilesService', () => {
   let service: DeviceFilesService;
@@ -40,15 +53,15 @@ describe('DeviceFilesService', () => {
   describe('uploadRepresentation', () => {
     it('debe lanzar BadRequestException si no se adjunta archivo', async () => {
       await expect(
-        service.uploadRepresentation('dev-1', 'user-1', null as any),
+        service.uploadRepresentation('dev-1', 'user-1', undefined),
       ).rejects.toThrow(BadRequestException);
     });
 
     it('debe lanzar BadRequestException si el tipo MIME no es de imagen', async () => {
-      const mockFile = {
+      const mockFile = createMockFile({
         mimetype: 'application/pdf',
         size: 1024,
-      } as any;
+      });
 
       await expect(
         service.uploadRepresentation('dev-1', 'user-1', mockFile),
@@ -56,10 +69,9 @@ describe('DeviceFilesService', () => {
     });
 
     it('debe lanzar BadRequestException si el peso excede los 5MB', async () => {
-      const mockFile = {
-        mimetype: 'image/png',
+      const mockFile = createMockFile({
         size: 6 * 1024 * 1024,
-      } as any;
+      });
 
       await expect(
         service.uploadRepresentation('dev-1', 'user-1', mockFile),
@@ -67,10 +79,7 @@ describe('DeviceFilesService', () => {
     });
 
     it('debe lanzar NotFoundException si el dispositivo no pertenece al usuario', async () => {
-      const mockFile = {
-        mimetype: 'image/png',
-        size: 1000,
-      } as any;
+      const mockFile = createMockFile();
 
       mockDb.select.mockReturnValueOnce({
         from: jest.fn().mockReturnValueOnce({

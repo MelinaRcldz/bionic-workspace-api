@@ -80,9 +80,9 @@ describe('AlertsService', () => {
         }),
       });
 
-      await expect(
-        service.findOne('alert-id', 'user-id'),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('alert-id', 'user-id')).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should return the requested alert', async () => {
@@ -102,9 +102,9 @@ describe('AlertsService', () => {
         }),
       });
 
-      await expect(
-        service.findOne('alert-id', 'user-id'),
-      ).resolves.toEqual(alert);
+      await expect(service.findOne('alert-id', 'user-id')).resolves.toEqual(
+        alert,
+      );
     });
   });
 
@@ -118,9 +118,9 @@ describe('AlertsService', () => {
         }),
       });
 
-      await expect(
-        service.resolveAlert('alert-id', 'user-id'),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.resolveAlert('alert-id', 'user-id')).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should resolve the alert and set the component to OPERATIONAL when there is no active out-of-bounds telemetry', async () => {
@@ -239,6 +239,12 @@ describe('AlertsService', () => {
           }),
         });
 
+      const persistentAlertUpdate = {
+        set: jest.fn().mockReturnValue({
+          where: jest.fn().mockResolvedValue([]),
+        }),
+      };
+
       mockDb.update
         .mockReturnValueOnce({
           set: jest.fn().mockReturnValue({
@@ -247,20 +253,13 @@ describe('AlertsService', () => {
             }),
           }),
         })
-        .mockReturnValueOnce({
-          set: jest.fn().mockReturnValue({
-            where: jest.fn().mockResolvedValue([]),
-          }),
-        });
+        .mockReturnValueOnce(persistentAlertUpdate);
 
       await service.resolveAlert('alert-id', 'user-id');
 
       expect(mockDb.update).toHaveBeenCalledTimes(2);
 
-      const componentUpdate = mockDb.update.mock.results[1].value;
-      const set = componentUpdate.set;
-
-      expect(set).toHaveBeenCalledWith(
+      expect(persistentAlertUpdate.set).toHaveBeenCalledWith(
         expect.objectContaining({
           status: 'WARNING',
           statusReason: 'PERSISTENT_AFTER_RESOLUTION',
