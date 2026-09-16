@@ -16,11 +16,12 @@ import type { Response } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { DeviceFilesService } from './device-files.service';
 import type { UploadedFile } from '../storage/storage.service';
+import type { AuthenticatedRequest } from '../auth/types/authenticated-request';
 
 @UseGuards(JwtAuthGuard)
 @Controller('devices/:deviceId')
 export class DeviceFilesController {
-  constructor(private readonly deviceFilesService: DeviceFilesService) { }
+  constructor(private readonly deviceFilesService: DeviceFilesService) {}
 
   /**
    * POST /devices/:deviceId/representation
@@ -30,8 +31,8 @@ export class DeviceFilesController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadRepresentation(
     @Param('deviceId', ParseUUIDPipe) deviceId: string,
-    @NestUploadedFile() file: UploadedFile,
-    @Req() req: any,
+    @NestUploadedFile() file: UploadedFile | undefined,
+    @Req() req: AuthenticatedRequest,
   ) {
     return this.deviceFilesService.uploadRepresentation(
       deviceId,
@@ -47,7 +48,7 @@ export class DeviceFilesController {
   @Get('representation')
   async getRepresentations(
     @Param('deviceId', ParseUUIDPipe) deviceId: string,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
   ) {
     return this.deviceFilesService.getRepresentations(deviceId, req.user.id);
   }
@@ -60,8 +61,8 @@ export class DeviceFilesController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadDocumentation(
     @Param('deviceId', ParseUUIDPipe) deviceId: string,
-    @NestUploadedFile() file: UploadedFile,
-    @Req() req: any,
+    @NestUploadedFile() file: UploadedFile | undefined,
+    @Req() req: AuthenticatedRequest,
   ) {
     return this.deviceFilesService.uploadDocumentation(
       deviceId,
@@ -77,7 +78,7 @@ export class DeviceFilesController {
   @Get('documentation')
   async getDocumentation(
     @Param('deviceId', ParseUUIDPipe) deviceId: string,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
   ) {
     return this.deviceFilesService.getDocumentation(deviceId, req.user.id);
   }
@@ -90,7 +91,7 @@ export class DeviceFilesController {
   async downloadFile(
     @Param('deviceId', ParseUUIDPipe) deviceId: string,
     @Param('fileId', ParseUUIDPipe) fileId: string,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
     @Res() res: Response,
   ) {
     const { absolutePath, file } =
@@ -117,23 +118,16 @@ export class DeviceFilesController {
   async deleteFile(
     @Param('deviceId', ParseUUIDPipe) deviceId: string,
     @Param('fileId', ParseUUIDPipe) fileId: string,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
   ) {
-    return this.deviceFilesService.deleteFile(
-      fileId,
-      deviceId,
-      req.user.id,
-    );
+    return this.deviceFilesService.deleteFile(fileId, deviceId, req.user.id);
   }
 
   @Get('files')
   async getAllDeviceFiles(
     @Param('deviceId', ParseUUIDPipe) deviceId: string,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
   ) {
-    return this.deviceFilesService.getAllDeviceFiles(
-      deviceId,
-      req.user.id,
-    );
+    return this.deviceFilesService.getAllDeviceFiles(deviceId, req.user.id);
   }
 }

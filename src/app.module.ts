@@ -20,7 +20,7 @@ import { DeviceFilesModule } from './device-files/device-files.module';
     ThrottlerModule.forRoot([
       {
         ttl: 60000, // 60 segundos
-        limit: 10,  // máximo 10 peticiones por minuto por IP
+        limit: 10, // máximo 10 peticiones por minuto por IP
       },
     ]),
     DatabaseModule,

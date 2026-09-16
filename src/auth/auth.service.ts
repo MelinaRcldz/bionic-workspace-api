@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, UnauthorizedException, ForbiddenException, } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -31,10 +36,13 @@ export class AuthService {
       fullName,
     });
 
-    const { password: _, ...userWithoutPassword } = user;
     return {
       message: 'Usuario registrado exitosamente',
-      user: userWithoutPassword,
+      user: {
+        id: user.id,
+        email: user.email,
+        fullName: user.fullName,
+      },
     };
   }
 
@@ -117,10 +125,7 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  private async updateRefreshTokenHash(
-    userId: string,
-    refreshToken: string,
-  ) {
+  private async updateRefreshTokenHash(userId: string, refreshToken: string) {
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
     await this.usersService.updateRefreshToken(userId, hashedRefreshToken);
   }

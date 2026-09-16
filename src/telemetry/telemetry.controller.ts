@@ -1,7 +1,16 @@
-import { Controller, Post, Get, Body, Param, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Param,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { TelemetryService } from './telemetry.service';
 import { CreateTelemetryDto } from './dto/create-telemetry.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from '../auth/types/authenticated-request';
 
 @UseGuards(JwtAuthGuard)
 @Controller('devices/:deviceId/telemetry')
@@ -12,7 +21,7 @@ export class TelemetryController {
   create(
     @Param('deviceId') deviceId: string,
     @Body() createTelemetryDto: CreateTelemetryDto,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
   ) {
     return this.telemetryService.processTelemetry(
       deviceId,
@@ -24,11 +33,8 @@ export class TelemetryController {
   @Get()
   findAll(
     @Param('deviceId') deviceId: string,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
   ) {
-    return this.telemetryService.findAllByDevice(
-      deviceId,
-      req.user.id,
-    );
+    return this.telemetryService.findAllByDevice(deviceId, req.user.id);
   }
 }

@@ -9,6 +9,12 @@ export interface JwtPayload {
   email: string;
 }
 
+export interface AuthenticatedUser {
+  id: string;
+  email: string;
+  fullName: string;
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -24,11 +30,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: JwtPayload) {
     const user = await this.usersService.findById(payload.sub);
+
     if (!user) {
       throw new UnauthorizedException('Usuario no encontrado o no autorizado');
     }
 
-    const { password, refreshToken, ...userWithoutSensitiveData } = user;
-    return userWithoutSensitiveData;
+    return {
+      id: user.id,
+      email: user.email,
+      fullName: user.fullName,
+    };
   }
 }

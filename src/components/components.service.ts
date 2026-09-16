@@ -1,4 +1,9 @@
-import { BadRequestException, Inject, Injectable, NotFoundException, } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { DRIZZLE } from '../database/database.module';
 import { components, devices } from '../database/schema';
@@ -22,7 +27,9 @@ export class ComponentsService {
       .where(and(eq(devices.id, deviceId), eq(devices.userId, userId)));
 
     if (!device) {
-      throw new NotFoundException('Dispositivo no encontrado o no pertenece al usuario');
+      throw new NotFoundException(
+        'Dispositivo no encontrado o no pertenece al usuario',
+      );
     }
     return device;
   }
@@ -34,7 +41,9 @@ export class ComponentsService {
       const maxNum = parseFloat(max);
 
       if (isNaN(minNum) || isNaN(maxNum)) {
-        throw new BadRequestException('Los umbrales deben ser valores numéricos válidos');
+        throw new BadRequestException(
+          'Los umbrales deben ser valores numéricos válidos',
+        );
       }
 
       if (minNum >= maxNum) {
@@ -45,11 +54,18 @@ export class ComponentsService {
     }
   }
 
-  async create(deviceId: string, userId: string, createComponentDto: CreateComponentDto) {
+  async create(
+    deviceId: string,
+    userId: string,
+    createComponentDto: CreateComponentDto,
+  ) {
     await this.verifyDeviceOwnership(deviceId, userId);
 
     // Validar rango numérico de umbrales
-    this.validateThresholds(createComponentDto.minThreshold, createComponentDto.maxThreshold);
+    this.validateThresholds(
+      createComponentDto.minThreshold,
+      createComponentDto.maxThreshold,
+    );
 
     const [newComponent] = await this.db
       .insert(components)
@@ -95,8 +111,14 @@ export class ComponentsService {
     const currentComponent = await this.findOne(id, deviceId, userId);
 
     // Evaluar los nuevos umbrales combinados con los existentes
-    const effectiveMin = updateComponentDto.minThreshold ?? currentComponent.minThreshold ?? undefined;
-    const effectiveMax = updateComponentDto.maxThreshold ?? currentComponent.maxThreshold ?? undefined;
+    const effectiveMin =
+      updateComponentDto.minThreshold ??
+      currentComponent.minThreshold ??
+      undefined;
+    const effectiveMax =
+      updateComponentDto.maxThreshold ??
+      currentComponent.maxThreshold ??
+      undefined;
 
     this.validateThresholds(effectiveMin, effectiveMax);
 

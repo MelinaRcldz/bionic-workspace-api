@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Req, UseGuards, Patch } from '@nestjs/common';
 import { AlertsService } from './alerts.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from '../auth/types/authenticated-request';
 
 @UseGuards(JwtAuthGuard)
 @Controller()
@@ -10,27 +11,18 @@ export class AlertsController {
   @Get('devices/:deviceId/alerts')
   findAlertsByDevice(
     @Param('deviceId') deviceId: string,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
   ) {
-    return this.alertsService.findAlertsByDevice(
-      deviceId,
-      req.user.id,
-    );
+    return this.alertsService.findAlertsByDevice(deviceId, req.user.id);
   }
-  
+
   @Get('alerts/:id')
-  findOne(
-    @Param('id') alertId: string,
-    @Req() req: any,
-  ) {
+  findOne(@Param('id') alertId: string, @Req() req: AuthenticatedRequest) {
     return this.alertsService.findOne(alertId, req.user.id);
   }
 
   @Patch('alerts/:id/resolve')
-  resolve(
-    @Param('id') alertId: string,
-    @Req() req: any,
-  ) {
+  resolve(@Param('id') alertId: string, @Req() req: AuthenticatedRequest) {
     return this.alertsService.resolveAlert(alertId, req.user.id);
   }
 }
