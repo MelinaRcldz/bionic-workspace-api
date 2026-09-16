@@ -4,12 +4,8 @@ REST API built with NestJS and TypeScript for managing and monitoring robotic an
 
 ## Overview
 
-Bionic Workspace is a platform designed for the development and supervision of robotic and bionic devices.
-Users can register their devices and the components that make them up, configure operational thresholds, send telemetry readings and monitor
-the resulting alerts and component status.
-Telemetry readings are evaluated against the thresholds configured for each component. When a reading falls outside the expected range, the API
-can generate an alert and update the component's operational status.
-The platform is designed to help developers detect abnormal physical conditions during testing and development of their devices.
+Bionic Workspace is a platform for managing and monitoring robotic and bionic devices during development.
+It allows users to manage devices and components, configure operational thresholds, process telemetry, generate alerts, track component status, and manage device files and documentation.
 
 ## Features
 
@@ -24,6 +20,8 @@ The platform is designed to help developers detect abnormal physical conditions 
 - 📊 Automatic component operational status tracking.
 - 📁 Device visual representation and technical documentation management.
 - 🛡️ File upload validation with supported file types and size limits.
+- 🧪 Unit and end-to-end testing.
+- ⚙️ Continuous Integration with GitHub Actions.
   
 
 ## Getting Started
@@ -32,7 +30,7 @@ The platform is designed to help developers detect abnormal physical conditions 
 
 Make sure you have installed:
 
-- Node.js
+- Node.js 20+
 - pnpm
 - Docker Desktop
 
@@ -86,6 +84,37 @@ The API will be available at:
 http://localhost:3000
 ```
 
+## 🧪 Testing
+
+Run the unit tests:
+
+```bash
+pnpm run test
+```
+
+Run the end-to-end tests:
+
+```bash
+pnpm run test:e2e
+```
+
+Run tests with coverage:
+```bash
+pnpm run test:cov
+```
+
+The project includes unit tests for critical business logic and end-to-end tests covering the main API flows, authentication, device management, telemetry, and file uploads.
+
+## ⚙️ Continuous Integration
+
+The project uses GitHub Actions to automatically validate changes pushed to `main` or submitted through pull requests.
+
+The CI pipeline runs:
+
+- ESLint
+- Project build
+- Unit tests
+
 ## 🛠️ Tech Stack
 
 - **NestJS** — Backend framework.
@@ -96,63 +125,64 @@ http://localhost:3000
 - **bcrypt** — Password hashing and refresh token hashing.
 - **Docker Compose** — Local PostgreSQL environment.
 - **pnpm** — Package manager.
+- **Jest** — Unit testing.
+- **Supertest** — End-to-end API testing.
+- **GitHub Actions** — Continuous Integration.
   
 
 ## Architecture
 ```
-                   BIONIC WORKSPACE API
+                        BIONIC WORKSPACE API
 
-┌──────────┐       ┌────────────┐       ┌─────────────┐
-│   USER   │ ────▶    DEVICE     ────▶ │  COMPONENT  │
-└──────────┘       └────────────┘       └──────┬──────┘
-                                               │
-                                               ▼
-                                       ┌───────────────┐
-                                       │   TELEMETRY   │
-                                       └───────┬───────┘
-                                               │
-                               ┌───────────────┴───────────────┐
-                               ▼                               ▼
-                          IN RANGE                        OUT OF RANGE
-                               │                               │
-                               ▼                               ▼
-                         OPERATIONAL                         ALERT
-                                                               │
-                                                               ▼
-                                                       COMPONENT STATUS
+        ┌──────────┐       ┌────────────┐       ┌─────────────┐
+        │   USER   │ ────▶    DEVICE     ────▶ │  COMPONENT  │
+        └──────────┘       └────────────┘       └──────┬──────┘
+                                                       │
+                                                       ▼
+                                               ┌───────────────┐
+                                               │   TELEMETRY   │
+                                               └───────┬───────┘
+                                                       │
+                                       ┌───────────────┴───────────────┐
+                                       ▼                               ▼
+                                    IN RANGE                       OUT OF RANGE
+                                       │                               │
+                                       ▼                               ▼
+                                  OPERATIONAL                        ALERT
+                                                                       │
+                                                                       ▼
+                                                                COMPONENT STATUS
 
 
-Component status
-                        ┌─────────────────┐
-                        │   OPERATIONAL   │
-                        └────────┬────────┘
-                                 │
-                       out-of-range telemetry
-                                 │
-                                 ▼
-                        ┌─────────────────┐
-  ┌────────────────────>│    CRITICAL     │<──────────────────────┐
-  │                     └────────┬────────┘                       │
-  │                              │                                │
-  │                ┌─────────────┴─────────────┐                  │   
-  │                │                           │                  │
-  │             normal                  alert resolution          │
-  │            telemetry              + condition persists        │
-  │                │                           │                  │
-out-of-            ▼                           ▼                out-of-
- range      ┌──────┴─────────┐        ┌────────┴──────────┐      range
-  │         │  WARNING /     │        │ WARNING /         │       │
-  │         │  RECOVERY      │        │ PERSISTENT_AFTER_ │       │
-  │         └───┬─────┬──────┘        │ RESOLUTION        │       │
-  │             │     │               └─────┬──────┬──────┘       │
-  │             │     │                     │      │              │
-  └─────────────┘     └────   normal   ─────┘      └──────────────┘             
-                             telemetry             
-                                │                                         
-                                ▼                                       
-                          ┌─────────────┐                  
-                          │ OPERATIONAL │            
-                          └─────────────┘            
+                Component status
+                                        ┌─────────────────┐
+                                        │   OPERATIONAL   │
+                                        └────────┬────────┘
+                                                 │
+                                        out-of-range telemetry
+                                                 │
+                                                 ▼
+                                        ┌─────────────────┐
+                 ┌─────────────────────>│    CRITICAL     │<──────────────────────┐
+                 │                      └────────┬────────┘                       │
+                 │                 ┌─────────────┴─────────────┐                  │
+                 │                 │                           │                  │
+                 │              normal                  alert resolution          │
+                 │             telemetry              + condition persists        │
+                 │                 │                           │                  │
+               out-of-             ▼                           ▼                out-of-
+                range       ┌──────┴─────────┐        ┌────────┴──────────┐      range
+                 │          │  WARNING /     │        │ WARNING /         │       │
+                 │          │  RECOVERY      │        │ PERSISTENT_AFTER_ │       │
+                 │          └───┬─────┬──────┘        │ RESOLUTION        │       │
+                 │              │     │               └─────┬──────┬──────┘       │
+                 └──────────────┘     └────   normal   ─────┘      └──────────────┘
+                                             telemetry
+                                                 │
+                                                 ▼
+                                          ┌─────────────┐
+                                          │ OPERATIONAL │
+                                          └─────────────┘
 ```
 
 ## API Endpoints
