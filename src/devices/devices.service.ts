@@ -27,10 +27,7 @@ export class DevicesService {
   }
 
   async findAllByUser(userId: string) {
-    return this.db
-      .select()
-      .from(devices)
-      .where(eq(devices.userId, userId));
+    return this.db.select().from(devices).where(eq(devices.userId, userId));
   }
 
   async findOneByUser(id: string, userId: string) {

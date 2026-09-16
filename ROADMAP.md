@@ -46,7 +46,7 @@
 - [x] 2. Tests unitarios de lógica crítica (DeviceFilesService, TelemetryService, AlertsService).
 - [x] 3. Tests e2e de flujos principales (Auth, Devices, Files, Telemetry).
 - [x] 4. Cobertura de seguridad, ownership y validaciones.
-- [ ] 5. Limpieza y corrección de errores detectados por ESLint
+- [x] 5. Limpieza y corrección de errores detectados por ESLint
 - [ ] 6. CI básico con GitHub Actions (lint, build, test).
 
 ## 🔮 FASE 1G — Integración Frontend

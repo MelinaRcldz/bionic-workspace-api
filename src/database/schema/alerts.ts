@@ -1,4 +1,11 @@
-import { pgTable, uuid, varchar, numeric, timestamp, boolean } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  uuid,
+  varchar,
+  numeric,
+  timestamp,
+  boolean,
+} from 'drizzle-orm/pg-core';
 import { devices } from './devices';
 import { components } from './components';
 
@@ -6,7 +13,10 @@ export const alerts = pgTable('alerts', {
   id: uuid('id').defaultRandom().primaryKey(),
   message: varchar('message', { length: 255 }).notNull(),
   severity: varchar('severity', { length: 50 }).notNull(), // 'WARNING' | 'CRITICAL'
-  valueRecorded: numeric('value_recorded', { precision: 10, scale: 2 }).notNull(),
+  valueRecorded: numeric('value_recorded', {
+    precision: 10,
+    scale: 2,
+  }).notNull(),
   isResolved: boolean('is_resolved').default(false).notNull(),
   deviceId: uuid('device_id')
     .notNull()

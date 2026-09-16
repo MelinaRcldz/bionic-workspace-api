@@ -5,7 +5,7 @@ import { DRIZZLE } from '../database/database.module';
 describe('UsersService', () => {
   let service: UsersService;
 
-    const mockDb = {
+  const mockDb = {
     select: jest.fn(),
     insert: jest.fn(),
     update: jest.fn(),
@@ -14,7 +14,7 @@ describe('UsersService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UsersService,
+      providers: [
         UsersService,
         {
           provide: DRIZZLE,
