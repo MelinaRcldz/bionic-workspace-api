@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException, } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -44,15 +48,12 @@ export class StorageService {
         .join(subfolder, uniqueFileName)
         .replace(/\\/g, '/');
 
-      const absolutePath = path.join(
-        this.uploadDir,
-        relativeStorageKey,
-      );
+      const absolutePath = path.join(this.uploadDir, relativeStorageKey);
 
       await fs.promises.writeFile(absolutePath, file.buffer);
 
       return relativeStorageKey;
-    } catch (error) {
+    } catch {
       throw new InternalServerErrorException(
         'Error al guardar el archivo en disco',
       );
@@ -69,7 +70,7 @@ export class StorageService {
       if (fs.existsSync(absolutePath)) {
         await fs.promises.unlink(absolutePath);
       }
-    } catch (error) {
+    } catch {
       throw new InternalServerErrorException(
         'Error al eliminar el archivo de disco',
       );
