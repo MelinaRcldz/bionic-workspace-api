@@ -49,11 +49,13 @@
 - [x] 5. Limpieza y corrección de errores detectados por ESLint
 - [x] 6. CI básico con GitHub Actions (lint, build, test).
 
-## 🔮 FASE 1G — Integración Frontend
+## 📚 FASE 1G — Documentación & Deploy
+- [ ] Documentación de la API con Swagger / OpenAPI.
+- [ ] Preparación para producción y variables de entorno.
+- [ ] Configuración de base de datos y deploy.
+- [ ] Verificación de la API desplegada y documentación final.
+  
+## 🔮 FASE 1H — Integración Frontend
 - [ ] Migración de localStorage a peticiones HTTP.
 - [ ] Vistas: Login, Registro, Dashboard "Mis Robots" y Detalle Holográfico.
-
-## 📚 FASE 1H — Documentación & Deploy
-- [ ] Swagger UI en `/api/docs`.
-- [ ] README.md completo con arquitectura e instrucciones.
-- [ ] Deploy Cloud de API + PostgreSQL en producción.
+  
