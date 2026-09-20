@@ -51,7 +51,7 @@
 
 ## 📚 FASE 1G — Documentación & Deploy
 - [x] Documentación de la API con Swagger / OpenAPI.
-- [ ] Preparación para producción y variables de entorno.
+- [x] Preparación para producción y variables de entorno.
 - [ ] Configuración de base de datos y deploy.
 - [ ] Verificación de la API desplegada y documentación final.
   
