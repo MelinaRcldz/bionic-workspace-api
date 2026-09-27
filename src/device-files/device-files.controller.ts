@@ -192,7 +192,12 @@ export class DeviceFilesController {
    */
   @Get('files/:fileId/download')
   @ApiOperation({ summary: 'Descargar o visualizar un archivo específico' })
-  @ApiProduces('application/octet-stream', 'image/png', 'image/jpeg', 'application/pdf')
+  @ApiProduces(
+    'application/octet-stream',
+    'image/png',
+    'image/jpeg',
+    'application/pdf',
+  )
   @ApiOkResponse({ description: 'Binary stream del archivo solicitado' })
   @ApiNotFoundResponse({
     description: 'Archivo o dispositivo no encontrado',

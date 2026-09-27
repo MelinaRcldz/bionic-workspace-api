@@ -9,7 +9,7 @@ export class LoginDto {
   @IsEmail({}, { message: 'El email debe ser válido' })
   @IsNotEmpty()
   email!: string;
-  
+
   @ApiProperty({
     description: 'Contraseña del usuario',
     example: 'contraseña123',

@@ -9,7 +9,7 @@ export class RegisterDto {
   @IsEmail({}, { message: 'El email debe ser válido' })
   @IsNotEmpty()
   email!: string;
-  
+
   @ApiProperty({
     description: 'Contraseña con un mínimo de 6 caracteres',
     example: '123456',

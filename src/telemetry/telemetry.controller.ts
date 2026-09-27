@@ -53,8 +53,8 @@ export class TelemetryController {
         componentStatus: 'CRITICAL',
         statusReason: null,
         evaluation: {
-        isOutOfBounds: true,
-        breachType: 'OVER_MAX',
+          isOutOfBounds: true,
+          breachType: 'OVER_MAX',
         },
         alert: {
           id: 'c32913a4-b64c-4d05-a176-db560f36dc0c',
@@ -72,7 +72,8 @@ export class TelemetryController {
   })
   @ApiBadRequestResponse({ description: 'Datos de telemetría inválidos' })
   @ApiNotFoundResponse({
-    description: 'Dispositivo o componente no encontrado o no pertenece al usuario',
+    description:
+      'Dispositivo o componente no encontrado o no pertenece al usuario',
   })
   @ApiUnauthorizedResponse({ description: 'No autorizado' })
   processTelemetry(

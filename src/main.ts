@@ -8,7 +8,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = new DocumentBuilder()
     .setTitle('Bionic Workspace API')
-    .setDescription('API for managing and monitoring robotic and bionic devices')
+    .setDescription(
+      'API for managing and monitoring robotic and bionic devices',
+    )
     .setVersion('1.0')
     .addBearerAuth()
     .build();

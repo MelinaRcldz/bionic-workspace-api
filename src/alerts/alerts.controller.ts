@@ -5,7 +5,6 @@ import {
   ParseUUIDPipe,
   Req,
   UseGuards,
-  Patch,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -31,7 +30,8 @@ export class AlertsController {
     summary: 'Obtener todas las alertas generadas por un dispositivo',
   })
   @ApiOkResponse({
-    description: 'Lista de alertas del dispositivo ordenadas por fecha reciente',
+    description:
+      'Lista de alertas del dispositivo ordenadas por fecha reciente',
   })
   @ApiNotFoundResponse({
     description: 'Dispositivo no encontrado o no pertenece al usuario',

@@ -31,7 +31,7 @@ import type { AuthenticatedRequest } from '../auth/types/authenticated-request';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
- @Post('register')
+  @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Registrar un nuevo usuario' })
   @ApiResponse({

@@ -16,15 +16,15 @@ import * as Joi from 'joi';
 @Module({
   imports: [
     ConfigModule.forRoot({
-    isGlobal: true,
-    validationSchema: Joi.object({
-      PORT: Joi.number().default(3000),
-      DATABASE_URL: Joi.string().required(),
-      JWT_SECRET: Joi.string().required(),
-      JWT_REFRESH_SECRET: Joi.string().required(),
-      FRONTEND_URL: Joi.string().uri().required(),
+      isGlobal: true,
+      validationSchema: Joi.object({
+        PORT: Joi.number().default(3000),
+        DATABASE_URL: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
+        JWT_REFRESH_SECRET: Joi.string().required(),
+        FRONTEND_URL: Joi.string().uri().required(),
+      }),
     }),
-  }),
     ThrottlerModule.forRoot([
       {
         ttl: 60000, // 60 segundos
