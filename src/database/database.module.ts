@@ -7,7 +7,7 @@ export const DRIZZLE = 'DRIZZLE';
 
 @Global()
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true })],
+  imports: [ConfigModule],
   providers: [
     {
       provide: DRIZZLE,

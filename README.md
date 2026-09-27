@@ -22,6 +22,14 @@ It allows users to manage devices and components, configure operational threshol
 - 🛡️ File upload validation with supported file types and size limits.
 - 🧪 Unit and end-to-end testing.
 - ⚙️ Continuous Integration with GitHub Actions.
+- 📚 Interactive API documentation with Swagger.
+- 🚀 Production deployment with Railway.
+
+## 📚 API Documentation
+
+Interactive API documentation is available through Swagger:
+
+https://bionic-workspace-api-production.up.railway.app/api
   
 
 ## Getting Started
@@ -30,8 +38,8 @@ It allows users to manage devices and components, configure operational threshol
 
 Make sure you have installed:
 
-- Node.js 20+
-- pnpm
+- Node.js 22.13+
+- pnpm 11.6.0
 - Docker Desktop
 
 ### Installation
@@ -128,33 +136,35 @@ The CI pipeline runs:
 - **Jest** — Unit testing.
 - **Supertest** — End-to-end API testing.
 - **GitHub Actions** — Continuous Integration.
+- **Swagger** — Interactive API documentation.
+- **Railway** — Production deployment.
   
 
 ## Architecture
 ```
-                        BIONIC WORKSPACE API
+                                        BIONIC WORKSPACE API
 
-        ┌──────────┐       ┌────────────┐       ┌─────────────┐
-        │   USER   │ ────▶    DEVICE     ────▶ │  COMPONENT  │
-        └──────────┘       └────────────┘       └──────┬──────┘
-                                                       │
-                                                       ▼
-                                               ┌───────────────┐
-                                               │   TELEMETRY   │
-                                               └───────┬───────┘
-                                                       │
-                                       ┌───────────────┴───────────────┐
-                                       ▼                               ▼
-                                    IN RANGE                       OUT OF RANGE
-                                       │                               │
-                                       ▼                               ▼
-                                  OPERATIONAL                        ALERT
-                                                                       │
-                                                                       ▼
-                                                                COMPONENT STATUS
+                ┌──────────┐       ┌────────────┐       ┌─────────────┐
+                │   USER   │ ────▶    DEVICE     ────▶ │  COMPONENT  │
+                └──────────┘       └────────────┘       └──────┬──────┘
+                                                               │
+                                                               ▼
+                                                       ┌───────────────┐
+                                                       │   TELEMETRY   │
+                                                       └───────┬───────┘
+                                                               │
+                                               ┌───────────────┴───────────────┐
+                                               ▼                               ▼
+                                            IN RANGE                      OUT OF RANGE
+                                               │                               │
+                                               ▼                               ▼
+                                          OPERATIONAL                        ALERT
+                                                                               │
+                                                                               ▼
+                                                                       COMPONENT STATUS
 
 
-                Component status
+        Component status
                                         ┌─────────────────┐
                                         │   OPERATIONAL   │
                                         └────────┬────────┘
@@ -253,3 +263,9 @@ A resolved alert does not necessarily mean that the physical condition has
 returned to normal. If the abnormal condition persists, the component can
 remain in `WARNING / PERSISTENT_AFTER_RESOLUTION` until normal telemetry is
 received.
+
+## 📁 File Storage
+
+Device representations and technical documentation are currently stored using the API's local filesystem through the `StorageService`.
+
+This is an intentional decision for the current development and portfolio deployment. The storage layer is isolated behind a dedicated service so that it can be replaced by an external object storage solution in the future if the project requires persistent cloud storage at a larger scale.
