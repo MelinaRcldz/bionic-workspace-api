@@ -52,8 +52,8 @@
 ## 📚 FASE 1G — Documentación & Deploy
 - [x] Documentación de la API con Swagger / OpenAPI.
 - [x] Preparación para producción y variables de entorno.
-- [ ] Configuración de base de datos y deploy.
-- [ ] Verificación de la API desplegada y documentación final.
+- [x] Configuración de base de datos y deploy.
+- [x] Verificación de la API desplegada y documentación final.
   
 ## 🔮 FASE 1H — Integración Frontend
 - [ ] Migración de localStorage a peticiones HTTP.
